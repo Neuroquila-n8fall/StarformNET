@@ -14,9 +14,9 @@ namespace DLS.StarformNET.Console
             Utilities.InitRandomSeed(0);
             var system = Generator.GenerateStellarSystem(SYSTEM_NAME);
             IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream(SYSTEM_FILE, FileMode.Create, FileAccess.Write, FileShare.None);
-            formatter.Serialize(stream, system);
-            stream.Close();
+            //Stream stream = new FileStream(SYSTEM_FILE, FileMode.Create, FileAccess.Write, FileShare.None);
+            //formatter.Serialize(stream, system);
+            //stream.Close();
         }
     }
 }
