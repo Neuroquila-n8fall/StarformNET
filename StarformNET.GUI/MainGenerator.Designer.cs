@@ -1,4 +1,4 @@
-namespace DLS.StarformNET
+namespace DLS.StarformNET.GUI
 {
     partial class MainGenerator
     {

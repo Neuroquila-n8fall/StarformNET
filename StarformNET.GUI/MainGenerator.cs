@@ -1,13 +1,12 @@
-namespace DLS.StarformNET
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using DLS.StarformNET.Data;
+using DLS.StarformNET.Display;
+
+namespace DLS.StarformNET.GUI
 {
-
-    using System;
-    using System.Drawing;
-    using System.Windows.Forms;
-    using System.IO;
-    using Display;
-    using Data;
-
     public partial class MainGenerator : Form
     {
         private static string ArtFolder = "Art";
