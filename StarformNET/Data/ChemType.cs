@@ -1,7 +1,7 @@
+using System.Text.Json;
+
 namespace DLS.StarformNET.Data
 {
-
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -45,22 +45,26 @@ namespace DLS.StarformNET.Data
             using (StreamReader r = new StreamReader(file))
             {
                 var json = r.ReadToEnd();
-                var items = JsonConvert.DeserializeObject<List<List<object>>>(json);
+                var options = new JsonSerializerOptions()
+                {
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                };
+                var items = JsonSerializer.Deserialize<List<List<JsonElement>>>(json,options);
 
 
                 foreach (var item in items)
                 {
-                    var num = Convert.ToInt32(item[0]);
-                    var sym = (string)item[1];
-                    var name = (string)item[2];
-                    var weight = Convert.ToDouble(item[3]);
-                    var melt = Convert.ToDouble(item[4]);
-                    var boil = Convert.ToDouble(item[5]);
-                    var dens = Convert.ToDouble(item[6]);
-                    var abunde = Convert.ToDouble(item[7]);
-                    var abunds = Convert.ToDouble(item[8]);
-                    var rea = Convert.ToDouble(item[9]);
-                    var maxIPP = (item.Count == 11 ? Convert.ToDouble(item[10]) : 0) * GlobalConstants.MMHG_TO_MILLIBARS;
+                    var num = item[0].GetInt32();
+                    var sym = item[1].GetString();
+                    var name = item[2].GetString();
+                    var weight = item[3].GetDouble();
+                    var melt = item[4].GetDouble();
+                    var boil = item[5].GetDouble();
+                    var dens = item[6].GetDouble();
+                    var abunde = item[7].GetDouble();
+                    var abunds = item[8].GetDouble();
+                    var rea = item[9].GetDouble();
+                    var maxIPP = (item.Count == 11 ? item[10].GetDouble() : 0) * GlobalConstants.MMHG_TO_MILLIBARS;
 
 
                     chemTable.Add(new ChemType(num, sym, sym, name, weight, melt, boil, dens, abunde, abunds, rea, maxIPP));

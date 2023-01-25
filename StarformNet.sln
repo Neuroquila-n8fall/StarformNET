@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarformNET", "StarformNet\StarformNET.csproj", "{EDE19080-B97B-418C-86B8-909512579C1D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarformNET.UnitTests", "StarformNET.UnitTests\StarformNET.UnitTests.csproj", "{007DC822-6B48-4543-B919-6625785C6808}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarformNET", "StarformNet\StarformNET.csproj", "{EDE19080-B97B-418C-86B8-909512579C1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarformNET.Console", "StarformNET.Console\StarformNET.Console.csproj", "{AE8D5137-BB27-4632-8B9C-10F4D2F0F408}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -13,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarformNET.Console", "Star
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarformNET.GUI", "StarformNET.GUI\StarformNET.GUI.csproj", "{C918AB57-ACA6-4CD9-B1E3-C6286AA93CFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarformNET.xUnitTests", "StarformNET.xUnitTests\StarformNET.xUnitTests.csproj", "{DF1732E8-1866-4435-B1CA-FC7602A637F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +24,6 @@ Global
 		{EDE19080-B97B-418C-86B8-909512579C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDE19080-B97B-418C-86B8-909512579C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDE19080-B97B-418C-86B8-909512579C1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{007DC822-6B48-4543-B919-6625785C6808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{007DC822-6B48-4543-B919-6625785C6808}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{007DC822-6B48-4543-B919-6625785C6808}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{007DC822-6B48-4543-B919-6625785C6808}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE8D5137-BB27-4632-8B9C-10F4D2F0F408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE8D5137-BB27-4632-8B9C-10F4D2F0F408}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE8D5137-BB27-4632-8B9C-10F4D2F0F408}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -36,6 +32,10 @@ Global
 		{C918AB57-ACA6-4CD9-B1E3-C6286AA93CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C918AB57-ACA6-4CD9-B1E3-C6286AA93CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C918AB57-ACA6-4CD9-B1E3-C6286AA93CFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF1732E8-1866-4435-B1CA-FC7602A637F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF1732E8-1866-4435-B1CA-FC7602A637F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF1732E8-1866-4435-B1CA-FC7602A637F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF1732E8-1866-4435-B1CA-FC7602A637F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
