@@ -1,16 +1,17 @@
 
+using Xunit;
+
 namespace DLS.StarformNET.UnitTests
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StarformNET;
     
     public class PlanetTests
     {
-        [TestClass]
+        
         public class EqualTests
         {
-            [TestCategory("Planet.Equals")]
-            [TestMethod]
+            [Fact][Trait("Category", "Planet.Equals")]
+            
             public void TestGeneratedEquality()
             {
                 Utilities.InitRandomSeed(0);
@@ -19,11 +20,11 @@ namespace DLS.StarformNET.UnitTests
                 Utilities.InitRandomSeed(0);
                 var system2 = Generator.GenerateStellarSystem("system2").Planets;
 
-                Assert.IsTrue(system1[0].Equals(system2[0]));
+                Assert.True(system1[0].Equals(system2[0]));
             }
 
-            [TestCategory("Planet.Equals")]
-            [TestMethod]
+            [Fact][Trait("Category", "Planet.Equals")]
+            
             public void TestGeneratedInequality()
             {
                 Utilities.InitRandomSeed(0);
@@ -32,7 +33,7 @@ namespace DLS.StarformNET.UnitTests
                 Utilities.InitRandomSeed(1);
                 var system2 = Generator.GenerateStellarSystem("system2").Planets;
 
-                Assert.IsFalse(system1[0].Equals(system2[0]));
+                Assert.False(system1[0].Equals(system2[0]));
             }
         }
     }

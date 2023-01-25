@@ -1,7 +1,7 @@
+using Xunit;
+
 namespace DLS.StarformNET.UnitTests
 {
-
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StarformNET;
     using Data;
     using System.Linq;
@@ -10,7 +10,7 @@ namespace DLS.StarformNET.UnitTests
 
     class EnvironmentTests
     {
-        [TestClass]
+        
         public class GasLifeTest
         {
             // Note these expected values aren't based on anything. They are
@@ -28,8 +28,8 @@ namespace DLS.StarformNET.UnitTests
                 GlobalConstants.WATER_VAPOR
             };
 
-            [TestCategory("GasLife")]
-            [TestMethod]
+            [Fact]
+            [Trait("Category", "GasLife")]
             public void TestGasesEarth()
             {
                 double[] expected =
@@ -44,8 +44,8 @@ namespace DLS.StarformNET.UnitTests
                 CheckGasValues(1500, 1.0, 6371, expected, Weights);
             }
 
-            [TestCategory("GasLife")]
-            [TestMethod]
+            [Fact]
+            [Trait("Category", "GasLife")]
             public void TestGasesHighExoTemp()
             {
                 double[] expected =
@@ -60,19 +60,19 @@ namespace DLS.StarformNET.UnitTests
                 CheckGasValues(4500, 0.5, 2440, expected, Weights);
             }
 
-            [TestCategory("GasLife")]
-            [TestMethod]
+            [Fact]
+            [Trait("Category", "GasLife")]
             public void TestReturnNaNZeroTemp()
             {
-                Assert.AreEqual(double.NaN, StarformNET.Environment.GasLife(
+                Assert.Equal(double.NaN, StarformNET.Environment.GasLife(
                     GlobalConstants.ATOMIC_NITROGEN, 0, 0.5, 2440));
             }
 
-            [TestCategory("GasLife")]
-            [TestMethod]
+            [Fact]
+            [Trait("Category", "GasLife")]
             public void TestReturnNaNNegativeTemp()
             {
-                Assert.AreEqual(double.NaN, StarformNET.Environment.GasLife(
+                Assert.Equal(double.NaN, StarformNET.Environment.GasLife(
                     GlobalConstants.ATOMIC_NITROGEN, -100, 0.5, 2440));
             }
 
@@ -83,42 +83,41 @@ namespace DLS.StarformNET.UnitTests
                 {
                     var e = expected[i];
                     var w = weights[i];
-                    Assert.AreEqual(e, StarformNET.Environment.GasLife(
+                    Assert.Equal(e, StarformNET.Environment.GasLife(
                         w, exo, surfG, radius), 0.000001);
                 }
             }
         }
 
-        [TestClass]
+        
         public class EcosphereTests
         {
-            [TestCategory("Ecosphere")]
-            [TestMethod]
+            [Fact]
+            [Trait("Category", "Ecosphere")]
             public void TestSunEcosphere()
             {
                 const double expectedValue = 1.0;
                 const double sunLuminosity = 1.0;
 
-                Assert.AreEqual(expectedValue, StarformNET.Environment.StarEcosphereRadiusAU(sunLuminosity), 0.0001);
+                Assert.Equal(expectedValue, StarformNET.Environment.StarEcosphereRadiusAU(sunLuminosity), 0.0001);
             }
         }
 
-        [TestClass]
         public class IlluminationTests
         {
-            [TestCategory("Illumination")]
-            [TestMethod]
+            [Fact][Trait("Category", "Illumination")]
+            
             public void TestSunIllumination()
             {
                 var expectedValue = 1.0;
                 var sunLuminosity = 1.0;
                 var earthSemiMajorAxis = 1.0;
 
-                Assert.AreEqual(expectedValue, StarformNET.Environment.MinimumIllumination(earthSemiMajorAxis, sunLuminosity));
+                Assert.Equal(expectedValue, StarformNET.Environment.MinimumIllumination(earthSemiMajorAxis, sunLuminosity));
             }
         }
 
-        [TestClass]
+        
         public class HillSphereTests
         {
             // Expected hill sphere value from:
@@ -139,64 +138,64 @@ namespace DLS.StarformNET.UnitTests
             public static double JupiterSemiMajorAxisKM = 778297882;
             public static double JupiterSemiMajorAxisAU = JupiterSemiMajorAxisKM / GlobalConstants.KM_PER_AU;
 
-            [TestCategory("Hill Sphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Hill Sphere")]
+            
             public void TestSunEarthHillSphere()
             {
                 var earthSphereKM = 1496498;
                 var earthSphereAU = earthSphereKM / GlobalConstants.KM_PER_AU;
 
                 var hAU = StarformNET.Environment.SimplifiedHillSphereAU(SunMass, EarthMass, EarthSemiMajorAxisAU);
-                Assert.AreEqual(earthSphereAU, hAU, 0.001);
+                Assert.Equal(earthSphereAU, hAU, 0.001);
 
                 var hKM = StarformNET.Environment.SimplifiedHillSphereKM(SunMass, EarthMass, EarthSemiMajorAxisAU);
-                Assert.AreEqual(earthSphereKM, hKM, 0.99);
+                Assert.Equal(earthSphereKM, hKM, 0.99);
             }
 
-            [TestCategory("Hill Sphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Hill Sphere")]
+            
             public void TestSunMercuryHillSphere()
             {
                 var mercurySphereKM = 220314;
                 var mercurySphereAU = mercurySphereKM / GlobalConstants.KM_PER_AU;
 
                 var hAU = StarformNET.Environment.SimplifiedHillSphereAU(SunMass, MercuryMass, MercurySemiMajorAxisAU);
-                Assert.AreEqual(mercurySphereAU, hAU, 0.001);
+                Assert.Equal(mercurySphereAU, hAU, 0.001);
 
                 var hKM = StarformNET.Environment.SimplifiedHillSphereKM(SunMass, MercuryMass, MercurySemiMajorAxisAU);
-                Assert.AreEqual(mercurySphereKM, hKM, 0.99);
+                Assert.Equal(mercurySphereKM, hKM, 0.99);
             }
 
-            [TestCategory("Hill Sphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Hill Sphere")]
+            
             public void TestSunVenusHillSphere()
             {
                 var venusSphereKM = 1011028;
                 var venusSphereAU = venusSphereKM / GlobalConstants.KM_PER_AU;
 
                 var hAU = StarformNET.Environment.SimplifiedHillSphereAU(SunMass, VenusMass, VenusSemiMajorAxisAU);
-                Assert.AreEqual(venusSphereAU, hAU, 0.001);
+                Assert.Equal(venusSphereAU, hAU, 0.001);
 
                 var hKM = StarformNET.Environment.SimplifiedHillSphereKM(SunMass, VenusMass, VenusSemiMajorAxisAU);
-                Assert.AreEqual(venusSphereKM, hKM, 0.99);
+                Assert.Equal(venusSphereKM, hKM, 0.99);
             }
 
-            [TestCategory("Hill Sphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Hill Sphere")]
+            
             public void TestSunJupiterHillSphere()
             {
                 var jupiterSphereKM = 53129256;
                 var jupiterSphereAU = jupiterSphereKM / GlobalConstants.KM_PER_AU;
 
                 var hAU = StarformNET.Environment.SimplifiedHillSphereAU(SunMass, JupiterMass, JupiterSemiMajorAxisAU);
-                Assert.AreEqual(jupiterSphereAU, hAU, 0.001);
+                Assert.Equal(jupiterSphereAU, hAU, 0.001);
 
                 var hKM = StarformNET.Environment.SimplifiedHillSphereKM(SunMass, JupiterMass, JupiterSemiMajorAxisAU);
-                Assert.AreEqual(jupiterSphereKM, hKM, 0.99);
+                Assert.Equal(jupiterSphereKM, hKM, 0.99);
             }
         }
 
-        [TestClass]
+        
         public class RocheLimitTests
         {
             public static double SunDensity = 1.408;
@@ -211,78 +210,78 @@ namespace DLS.StarformNET.UnitTests
             public static double SaturnRadius = 60267000;
             public static double AvgCometDensity = .5;
 
-            [TestCategory("Roche Limit")]
-            [TestMethod]
+            [Fact][Trait("Category", "Roche Limit")]
+            
             public void TestEarthMoonRocheLimit()
             {
                 var earthMoonKM = 9492;
                 var earthMoonAU = earthMoonKM / GlobalConstants.KM_PER_AU;
 
                 var dAU = StarformNET.Environment.RocheLimitAU(EarthRadius, EarthDensity, MoonDensity);
-                Assert.AreEqual(earthMoonAU, dAU, 0.99);
+                Assert.Equal(earthMoonAU, dAU, 0.99);
 
                 var dKM = StarformNET.Environment.RocheLimitKM(EarthRadius, EarthDensity, MoonDensity);
-                Assert.AreEqual(earthMoonKM, dKM, 0.99);
+                Assert.Equal(earthMoonKM, dKM, 0.99);
             }
 
-            [TestCategory("Roche Limit")]
-            [TestMethod]
+            [Fact][Trait("Category", "Roche Limit")]
+            
             public void TestEarthAverageCometRocheLimit()
             {
                 var earthAvgCometKM = 17887;
                 var earthAvgCometAU = earthAvgCometKM / GlobalConstants.KM_PER_AU;
 
                 var dAU = StarformNET.Environment.RocheLimitAU(EarthRadius, EarthDensity, AvgCometDensity);
-                Assert.AreEqual(earthAvgCometAU, dAU, 0.99);
+                Assert.Equal(earthAvgCometAU, dAU, 0.99);
 
                 var dKM = StarformNET.Environment.RocheLimitKM(EarthRadius, EarthDensity, AvgCometDensity);
-                Assert.AreEqual(earthAvgCometKM, dKM, 0.99);
+                Assert.Equal(earthAvgCometKM, dKM, 0.99);
             }
 
-            [TestCategory("Roche Limit")]
-            [TestMethod]
+            [Fact][Trait("Category", "Roche Limit")]
+            
             public void TestSunEarthRocheLimit()
             {
                 var sunEarthKM = 556397;
                 var sunEarthAU = sunEarthKM / GlobalConstants.KM_PER_AU;
 
                 var dAU = StarformNET.Environment.RocheLimitAU(SunRadius, SunDensity, EarthDensity);
-                Assert.AreEqual(sunEarthAU, dAU, 0.99);
+                Assert.Equal(sunEarthAU, dAU, 0.99);
 
                 var dKM = StarformNET.Environment.RocheLimitKM(SunRadius, SunDensity, EarthDensity);
-                Assert.AreEqual(sunEarthKM, dKM, 0.99);
+                Assert.Equal(sunEarthKM, dKM, 0.99);
             }
 
-            [TestCategory("Roche Limit")]
-            [TestMethod]
+            [Fact][Trait("Category", "Roche Limit")]
+            
             public void TestSunMoonRocheLimit()
             {
                 var sunMoonKM = 657161;
                 var sunMoonAU = sunMoonKM / GlobalConstants.KM_PER_AU;
 
                 var dAU = StarformNET.Environment.RocheLimitAU(SunRadius, SunDensity, MoonDensity);
-                Assert.AreEqual(sunMoonAU, dAU, 0.99);
+                Assert.Equal(sunMoonAU, dAU, 0.99);
 
                 var dKM = StarformNET.Environment.RocheLimitKM(SunRadius, SunDensity, MoonDensity);
-                Assert.AreEqual(sunMoonKM, dKM, 0.99);
+                Assert.Equal(sunMoonKM, dKM, 0.99);
             }
 
-            [TestCategory("Roche Limit")]
-            [TestMethod]
+            [Fact][Trait("Category", "Roche Limit")]
+            
             public void TestSunJupiterRocheLimit()
             {
                 var sunJupiterKM = 894677;
                 var sunJupiterAU = sunJupiterKM / GlobalConstants.KM_PER_AU;
 
                 var dAU = StarformNET.Environment.RocheLimitAU(SunRadius, SunDensity, JupiterDensity);
-                Assert.AreEqual(sunJupiterAU, dAU, 0.99);
+                Assert.Equal(sunJupiterAU, dAU, 0.99);
 
                 var dKM = StarformNET.Environment.RocheLimitKM(SunRadius, SunDensity, JupiterDensity);
-                Assert.AreEqual(sunJupiterKM, dKM, 0.99);
+                Assert.Equal(sunJupiterKM, dKM, 0.99);
             }
         }
 
-        [TestClass]
+        
         public class BreathabilityTests
         {
             private static Dictionary<string, ChemType> TestGases = new Dictionary<string, ChemType>()
@@ -333,48 +332,55 @@ namespace DLS.StarformNET.UnitTests
                 return planet;
             }
 
-            [TestCategory("Breathability")]
-            [ExpectedException(typeof(ArgumentNullException))]
-            [TestMethod]
+            [Fact][Trait("Category", "Breathability")]
+
             public void TestNullPlanet()
             {
-                var breathe = StarformNET.Environment.Breathability(null);
+                try
+                {
+                    var breathe = StarformNET.Environment.Breathability(null);
+                }
+                catch (Exception e)
+                {
+                    Assert.True(e.GetType() == typeof(ArgumentNullException));
+                }
+                
             }
 
-            [TestCategory("Breathability")]
-            [TestMethod]
+            [Fact][Trait("Category", "Breathability")]
+            
             public void TestNoAtmoPlanet()
             {
                 var planet = GetMockPlanet(GetMockNoAtmo);
                 var breathe = StarformNET.Environment.Breathability(planet);
-                Assert.AreEqual(Breathability.None, breathe);
+                Assert.Equal(Breathability.None, breathe);
             }
 
-            [TestCategory("Breathability")]
-            [TestMethod]
+            [Fact][Trait("Category", "Breathability")]
+            
             public void TestBreathablePlanet()
             {
                 var planet = GetMockPlanet(GetMockBreathableAtmo);
                 var breathe = StarformNET.Environment.Breathability(planet);
-                Assert.AreEqual(Breathability.Breathable, breathe);
+                Assert.Equal(Breathability.Breathable, breathe);
             }
 
-            [TestCategory("Breathability")]
-            [TestMethod]
+            [Fact][Trait("Category", "Breathability")]
+            
             public void TestUnbreathablePlanet()
             {
                 var planet = GetMockPlanet(GetMockUnbreathableAtmo);
                 var breathe = StarformNET.Environment.Breathability(planet);
-                Assert.AreEqual(Breathability.Unbreathable, breathe);
+                Assert.Equal(Breathability.Unbreathable, breathe);
             }
 
-            [TestCategory("Breathability")]
-            [TestMethod]
+            [Fact][Trait("Category", "Breathability")]
+            
             public void TestPoisonousPlanet()
             {
                 var planet = GetMockPlanet(GetMockPoisonousAtmo);
                 var breathe = StarformNET.Environment.Breathability(planet);
-                Assert.AreEqual(Breathability.Poisonous, breathe);
+                Assert.Equal(Breathability.Poisonous, breathe);
             }
         }
     }

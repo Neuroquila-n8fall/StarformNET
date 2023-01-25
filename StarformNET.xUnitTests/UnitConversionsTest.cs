@@ -1,30 +1,31 @@
+using Xunit;
+
 namespace DLS.StarformNET.UnitTests
 {
 
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StarformNET;
 
     public class UnitConversionsTest
     {
         public static double DELTA = 0.01;
 
-        [TestClass]
+        
         public class EarthRadiusToCentimetersTests
         {
             public static double EARTH_RADIUS_IN_CM = 6.3714E8;
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertOneEarthRadius()
             {
                 var expectedValue = EARTH_RADIUS_IN_CM;
 
-                Assert.AreEqual(expectedValue, UnitConversions.EarthRadiusToCentimeters(1), DELTA);
+                Assert.Equal(expectedValue, UnitConversions.EarthRadiusToCentimeters(1), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertFractionalEarthRadii()
             {
                 var input1 = 0.4;
@@ -33,34 +34,34 @@ namespace DLS.StarformNET.UnitTests
                 var input2 = 0.7;
                 var expectedValue2 = EARTH_RADIUS_IN_CM * 0.7;
 
-                Assert.AreEqual(expectedValue1, UnitConversions.EarthRadiusToCentimeters(input1), DELTA);
-                Assert.AreEqual(expectedValue2, UnitConversions.EarthRadiusToCentimeters(input2), DELTA);
+                Assert.Equal(expectedValue1, UnitConversions.EarthRadiusToCentimeters(input1), DELTA);
+                Assert.Equal(expectedValue2, UnitConversions.EarthRadiusToCentimeters(input2), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertZeroEarthRadius()
             {
-                Assert.AreEqual(0, UnitConversions.EarthRadiusToCentimeters(0), DELTA);
+                Assert.Equal(0, UnitConversions.EarthRadiusToCentimeters(0), DELTA);
             }
         }
 
-        [TestClass]
+        
         public class EarthRadiusToKilometersTests
         {
             public static double EARTH_RADIUS_IN_KM = 6371.393;
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertOneEarthRadius()
             {
                 var expectedValue = EARTH_RADIUS_IN_KM;
 
-                Assert.AreEqual(expectedValue, UnitConversions.EarthRadiusToKilometers(1), DELTA);
+                Assert.Equal(expectedValue, UnitConversions.EarthRadiusToKilometers(1), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertFractionalEarthRadii()
             {
                 var input1 = 0.4;
@@ -69,34 +70,34 @@ namespace DLS.StarformNET.UnitTests
                 var input2 = 0.7;
                 var expectedValue2 = EARTH_RADIUS_IN_KM * 0.7;
 
-                Assert.AreEqual(expectedValue1, UnitConversions.EarthRadiusToKilometers(input1), DELTA);
-                Assert.AreEqual(expectedValue2, UnitConversions.EarthRadiusToKilometers(input2), DELTA);
+                Assert.Equal(expectedValue1, UnitConversions.EarthRadiusToKilometers(input1), DELTA);
+                Assert.Equal(expectedValue2, UnitConversions.EarthRadiusToKilometers(input2), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertZeroEarthRadius()
             {
-                Assert.AreEqual(0, UnitConversions.EarthRadiusToKilometers(0), DELTA);
+                Assert.Equal(0, UnitConversions.EarthRadiusToKilometers(0), DELTA);
             }
         }
 
-        [TestClass]
+        
         public class CentimetersToEarthRadiusTests
         {
             public static double EARTH_RADIUS_IN_CM = 6.3714E8;
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertOneEarthRadius()
             {
                 var expectedValue = 1.0;
 
-                Assert.AreEqual(expectedValue, UnitConversions.CentimetersToEarthRadius(EARTH_RADIUS_IN_CM), DELTA);
+                Assert.Equal(expectedValue, UnitConversions.CentimetersToEarthRadius(EARTH_RADIUS_IN_CM), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertLessThanOneEarthRadius()
             {
                 var input1 = EARTH_RADIUS_IN_CM / 12;
@@ -105,34 +106,34 @@ namespace DLS.StarformNET.UnitTests
                 var input2 = EARTH_RADIUS_IN_CM / 4;
                 var expectedValue2 = 1.0 / 4;
 
-                Assert.AreEqual(expectedValue1, UnitConversions.CentimetersToEarthRadius(input1), DELTA);
-                Assert.AreEqual(expectedValue2, UnitConversions.CentimetersToEarthRadius(input2), DELTA);
+                Assert.Equal(expectedValue1, UnitConversions.CentimetersToEarthRadius(input1), DELTA);
+                Assert.Equal(expectedValue2, UnitConversions.CentimetersToEarthRadius(input2), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertZeroCentimeters()
             {
-                Assert.AreEqual(0, UnitConversions.CentimetersToEarthRadius(0), DELTA);
+                Assert.Equal(0, UnitConversions.CentimetersToEarthRadius(0), DELTA);
             }
         }
 
-        [TestClass]
+        
         public class KilometersToEarthRadiusTests
         {
             public static double EARTH_RADIUS_IN_KM = 6371.393;
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertOneEarthRadius()
             {
                 var expectedValue = 1.0;
 
-                Assert.AreEqual(expectedValue, UnitConversions.KilometersToEarthRadius(EARTH_RADIUS_IN_KM), DELTA);
+                Assert.Equal(expectedValue, UnitConversions.KilometersToEarthRadius(EARTH_RADIUS_IN_KM), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertLessThanOneEarthRadius()
             {
                 var input1 = EARTH_RADIUS_IN_KM / 12;
@@ -141,34 +142,34 @@ namespace DLS.StarformNET.UnitTests
                 var input2 = EARTH_RADIUS_IN_KM / 4;
                 var expectedValue2 = 1.0 / 4;
 
-                Assert.AreEqual(expectedValue1, UnitConversions.KilometersToEarthRadius(input1), DELTA);
-                Assert.AreEqual(expectedValue2, UnitConversions.KilometersToEarthRadius(input2), DELTA);
+                Assert.Equal(expectedValue1, UnitConversions.KilometersToEarthRadius(input1), DELTA);
+                Assert.Equal(expectedValue2, UnitConversions.KilometersToEarthRadius(input2), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertZeroCentimeters()
             {
-                Assert.AreEqual(0, UnitConversions.KilometersToEarthRadius(0), DELTA);
+                Assert.Equal(0, UnitConversions.KilometersToEarthRadius(0), DELTA);
             }
         }
 
-        [TestClass]
+        
         public class SolarMassesToKilogramsTests
         {
             public static double SOLAR_MASS_IN_KG = 1.989E30;
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertOneSolarMass()
             {
                 var expectedValue = SOLAR_MASS_IN_KG;
 
-                Assert.AreEqual(expectedValue, UnitConversions.SolarMassesToKilograms(1), DELTA);
+                Assert.Equal(expectedValue, UnitConversions.SolarMassesToKilograms(1), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertLessThanOneSolarMass()
             {
                 var input1 = 0.4;
@@ -177,34 +178,34 @@ namespace DLS.StarformNET.UnitTests
                 var input2 = 0.7;
                 var expectedValue2 = 0.7 * SOLAR_MASS_IN_KG;
 
-                Assert.AreEqual(expectedValue1, UnitConversions.SolarMassesToKilograms(input1), DELTA);
-                Assert.AreEqual(expectedValue2, UnitConversions.SolarMassesToKilograms(input2), DELTA);
+                Assert.Equal(expectedValue1, UnitConversions.SolarMassesToKilograms(input1), DELTA);
+                Assert.Equal(expectedValue2, UnitConversions.SolarMassesToKilograms(input2), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertZeroSolarMasses()
             {
-                Assert.AreEqual(0, UnitConversions.KilometersToEarthRadius(0), DELTA);
+                Assert.Equal(0, UnitConversions.KilometersToEarthRadius(0), DELTA);
             }
         }
 
-        [TestClass]
+        
         public class SolarMassesToGramsTests
         {
             public static double SOLAR_MASS_IN_G = 1.989E33;
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertOneSolarMass()
             {
                 var expectedValue = SOLAR_MASS_IN_G;
 
-                Assert.AreEqual(expectedValue, UnitConversions.SolarMassesToGrams(1), DELTA);
+                Assert.Equal(expectedValue, UnitConversions.SolarMassesToGrams(1), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertLessThanOneSolarMass()
             {
                 var input1 = 0.4;
@@ -213,32 +214,32 @@ namespace DLS.StarformNET.UnitTests
                 var input2 = 0.7;
                 var expectedValue2 = 0.7 * SOLAR_MASS_IN_G;
 
-                Assert.AreEqual(expectedValue1, UnitConversions.SolarMassesToGrams(input1), DELTA);
-                Assert.AreEqual(expectedValue2, UnitConversions.SolarMassesToGrams(input2), DELTA);
+                Assert.Equal(expectedValue1, UnitConversions.SolarMassesToGrams(input1), DELTA);
+                Assert.Equal(expectedValue2, UnitConversions.SolarMassesToGrams(input2), DELTA);
             }
 
-            [TestCategory("UnitConversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "UnitConversions")]
+            
             public void ConvertZeroSolarMasses()
             {
-                Assert.AreEqual(0, UnitConversions.KilometersToEarthRadius(0), DELTA);
+                Assert.Equal(0, UnitConversions.KilometersToEarthRadius(0), DELTA);
             }
         }
 
-        [TestClass]
+        
         public class KelvinToFahrenheitTests
         {
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertAbsoluteZero()
             {
                 double resultZero = UnitConversions.KelvinToFahrenheit(0.0);
-                Assert.AreEqual(resultZero, -459.67, DELTA, "Absolute zero converted incorrectly.");
+                Assert.Equal(-459.67, resultZero, DELTA);
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositiveKelvin()
             {
                 var tempK = new double[]
@@ -264,26 +265,24 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < tempK.Length; i++)
                 {
                     var result = UnitConversions.KelvinToFahrenheit(tempK[i]);
-                    Assert.AreEqual(result, expectedTemp[i], DELTA,
-                        String.Format("Incorrect result converting {0} K. Expected {1}, received {2}",
-                        tempK[i], expectedTemp[i], result));
+                    Assert.Equal(result, expectedTemp[i], DELTA);
                 }
             }
         }
 
-        [TestClass]
+        
         public class MMHGToMillibarsTests
         {
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertZeroPressure()
             {
                 var result = UnitConversions.MMHGToMillibars(0);
-                Assert.AreEqual(result, 0.0, DELTA, "Incorrect conversion for zero mmHg");
+                Assert.Equal(0.0, result, DELTA);
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositivePressureLessThanOne()
             {
                 var presMmHg = new double[]
@@ -311,14 +310,12 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < presMmHg.Length; i++)
                 {
                     var result = UnitConversions.MMHGToMillibars(presMmHg[i]);
-                    Assert.AreEqual(result, expectedMb[i], DELTA,
-                        String.Format("Incorrect result converting {0} mmHg. Expected {1}, received {2}",
-                        presMmHg[i], expectedMb[i], result));
+                    Assert.Equal(result, expectedMb[i], DELTA);
                 }
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositivePressureWholeNumbers()
             {
                 var presMmHg = new double[]
@@ -346,34 +343,32 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < presMmHg.Length; i++)
                 {
                     var result = UnitConversions.MMHGToMillibars(presMmHg[i]);
-                    Assert.AreEqual(result, expectedMb[i], DELTA,
-                        String.Format("Incorrect result converting {0} mmHg. Expected {1}, received {2}",
-                        presMmHg[i], expectedMb[i], result));
+                    Assert.Equal(result, expectedMb[i], DELTA);
                 }
             }
         }
 
-        [TestClass]
+        
         public class MillibarsToAtmTests
         {
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertZeroPressure()
             {
                 var result = UnitConversions.MillibarsToAtm(0);
-                Assert.AreEqual(result, 0.0, DELTA, "Incorrect conversion for zero mmHg");
+                Assert.Equal(0.0, result, DELTA);
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertEarthSurfacePressure()
             {
                 var result = UnitConversions.MillibarsToAtm(GlobalConstants.EARTH_SURF_PRES_IN_MILLIBARS);
-                Assert.AreEqual(result, 1.0, DELTA, "Incorrect conversion for Earth surface pressure.");
+                Assert.Equal(1.0, result, DELTA);
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositivePressureLessThanOne()
             {
                 var presMb = new double[]
@@ -403,14 +398,12 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < presMb.Length; i++)
                 {
                     var result = UnitConversions.MillibarsToAtm(presMb[i]);
-                    Assert.AreEqual(result, expectedAtm[i], DELTA,
-                        String.Format("Incorrect result converting {0} mb. Expected {1}atm, received {2}atm",
-                        presMb[i], expectedAtm[i], result));
+                    Assert.Equal(result, expectedAtm[i], DELTA);
                 }
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositivePressureWholeNumbers()
             {
                 var presMb = new double[]
@@ -438,14 +431,12 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < presMb.Length; i++)
                 {
                     var result = UnitConversions.MillibarsToAtm(presMb[i]);
-                    Assert.AreEqual(result, expectedAtm[i], DELTA,
-                        String.Format("Incorrect result converting {0} mb. Expected {1}atm, received {2}atm",
-                        presMb[i], expectedAtm[i], result));
+                    Assert.Equal(result, expectedAtm[i], DELTA);
                 }
             }
         }
 
-        [TestClass]
+        
         public class PPMToMillibars
         {
             private static double[] ATMOS = new double[] { 1, 1.5, 0.5, 4, 0.1 };
@@ -461,8 +452,8 @@ namespace DLS.StarformNET.UnitTests
                 25000
             };
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertZeroPPM()
             {
                 var expected = new double[]
@@ -477,12 +468,12 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < ATMOS.Length; i++)
                 {
                     var result = UnitConversions.PPMToMillibars(0, ATMOS[i]);
-                    Assert.AreEqual(expected[i], result, DELTA);
+                    Assert.Equal(expected[i], result, DELTA);
                 }
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void Convert1MPPM()
             {
                 var expected = new double[]
@@ -497,12 +488,12 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < ATMOS.Length; i++)
                 {
                     var result = UnitConversions.PPMToMillibars(1000000, ATMOS[i]);
-                    Assert.AreEqual(result, GlobalConstants.EARTH_SURF_PRES_IN_MILLIBARS * ATMOS[i], DELTA);
+                    Assert.Equal(result, GlobalConstants.EARTH_SURF_PRES_IN_MILLIBARS * ATMOS[i], DELTA);
                 }
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositivePPMWholeNumbers1Atm()
             {
                 var expected = new double[]
@@ -520,14 +511,12 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < PPM_VALUES.Length; i++)
                 {
                     var result = UnitConversions.PPMToMillibars(PPM_VALUES[i]);
-                    Assert.AreEqual(expected[i], result, DELTA,
-                        String.Format("expected: {0} ppm @ {1} atm -> {2} mb, result: {3}",
-                        PPM_VALUES[i], 1.0, expected[i], result));
+                    Assert.Equal(expected[i], result, DELTA);
                 }
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositivePPMWholeNumbersBelow1Atm()
             {
                 var expected = new double[]
@@ -545,14 +534,12 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < PPM_VALUES.Length; i++)
                 {
                     var result = UnitConversions.PPMToMillibars(PPM_VALUES[i], 0.5);
-                    Assert.AreEqual(expected[i], result, DELTA,
-                        String.Format("expected: {0} ppm @ {1} atm -> {2} mb, result: {3}",
-                        PPM_VALUES[i], 0.5, expected[i], result));
+                    Assert.Equal(expected[i], result, DELTA);
                 }
             }
 
-            [TestCategory("Unit Conversions")]
-            [TestMethod]
+            [Fact][Trait("Category", "Unit Conversions")]
+            
             public void ConvertPositivePPMWholeNumbersAbove1Atm()
             {
                 var expected = new double[]
@@ -570,9 +557,7 @@ namespace DLS.StarformNET.UnitTests
                 for (var i = 0; i < PPM_VALUES.Length; i++)
                 {
                     var result = UnitConversions.PPMToMillibars(PPM_VALUES[i], 2.0);
-                    Assert.AreEqual(expected[i], result, DELTA,
-                        String.Format("expected: {0} ppm @ {1} atm -> {2} mb, result: {3}",
-                        PPM_VALUES[i], 2.0, expected[i], result));
+                    Assert.Equal(expected[i], result, DELTA);
                 }
             }
         }

@@ -1,6 +1,7 @@
+using Xunit;
+
 namespace DLS.StarformNET.UnitTests
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StarformNET;
     using Data;
     using System.Collections.Generic;
@@ -12,61 +13,48 @@ namespace DLS.StarformNET.UnitTests
 
     class GeneratorTests
     {
-        [TestClass]
+        
         public class GenerateStellarSystemTests
         {
-            private string TEST_FILE = "testsystem.bin";
-            private string TEST_FILE_PATH = "Testdata";
-
-            [TestCategory("Generator Regression")]
-            [TestMethod]
-            public void TestSameSeedAgainstSavedOutput()
+            [Fact][Trait("Category", "Generator Regression")]
+            
+            public void TestSeedAgainstSameSeed()
             {
-                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                var testFileDir = Path.Combine(baseDir, TEST_FILE_PATH, TEST_FILE);
-
-                IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(testFileDir, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var savedSystem = (List<Planet>)formatter.Deserialize(stream);
-                stream.Close();
+                Utilities.InitRandomSeed(0);
+                var refSystem = Generator.GenerateStellarSystem("test").Planets;
 
                 Utilities.InitRandomSeed(0);
                 var newSystem = Generator.GenerateStellarSystem("test").Planets;
-                Assert.AreEqual(savedSystem.Count, newSystem.Count, "Incorrect number of planets");
-                for (var i = 0; i < savedSystem.Count; i++)
+                Assert.Equal(refSystem.Count, newSystem.Count);
+                for (var i = 0; i < refSystem.Count; i++)
                 {
-                    Assert.IsTrue(savedSystem[i].Equals(newSystem[i]), String.Format("Planet {0} not equal", i));
+                    Assert.True(refSystem[i].Equals(newSystem[i]), String.Format("Planet {0} not equal", i));
                 }
             }
 
-            [TestCategory("Generator Regression")]
-            [TestMethod]
+            [Fact][Trait("Category", "Generator Regression")]
+            
             public void TestDifferentSeedAgainstSavedOutput()
             {
-                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                var testFileDir = Path.Combine(baseDir, TEST_FILE_PATH, TEST_FILE);
-
-                IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(testFileDir, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var savedSystem = (List<Planet>)formatter.Deserialize(stream);
-                stream.Close();
+                Utilities.InitRandomSeed(0);
+                var refSystem = Generator.GenerateStellarSystem("test").Planets;
 
                 Utilities.InitRandomSeed(1);
                 var newSystem = Generator.GenerateStellarSystem("test").Planets;
                 var atleastOneDifferent = false;
-                for (var i = 0; i < savedSystem.Count; i++)
+                for (var i = 0; i < refSystem.Count; i++)
                 {
-                    if (!savedSystem[i].Equals(newSystem[i]))
+                    if (!refSystem[i].Equals(newSystem[i]))
                     {
                         atleastOneDifferent = true;
                         break;
                     }
                 }
-                Assert.IsTrue(atleastOneDifferent);
+                Assert.True(atleastOneDifferent);
             }
         }
 
-        [TestClass]
+        
         public class CalculateGasesTest
         {
             private double DELTA = 0.0001;
@@ -121,8 +109,8 @@ namespace DLS.StarformNET.UnitTests
                 return planet;
             }
 
-            [TestCategory("Atmosphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Atmosphere")]
+            
             public void TestEmptyPlanet()
             {
                 var planet = new Planet();
@@ -130,22 +118,22 @@ namespace DLS.StarformNET.UnitTests
                 planet.Star = sun;
                 Generator.CalculateGases(planet, new ChemType[0]);
                 
-                Assert.AreEqual(0, planet.Atmosphere.Composition.Count);
+                Assert.Empty(planet.Atmosphere.Composition);
             }
 
-            [TestCategory("Atmosphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Atmosphere")]
+            
             public void TestEmptyChemTable()
             {
                 var planet = GetTestPlanetAtmosphere();
                 var star = planet.Star;
                 Generator.CalculateGases(planet, new ChemType[0]);
-                
-                Assert.AreEqual(0, planet.Atmosphere.Composition.Count);
+
+                Assert.Empty(planet.Atmosphere.Composition);
             }
 
-            [TestCategory("Atmosphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Atmosphere")]
+            
             public void TestAtmosphereDefaultChemTable()
             {
                 var expected = new Dictionary<string, double>()
@@ -166,23 +154,23 @@ namespace DLS.StarformNET.UnitTests
                 var star = planet.Star;
                 Generator.CalculateGases(planet, ChemType.GetDefaultTable());
 
-                Assert.AreEqual(expected.Count, planet.Atmosphere.Composition.Count);
+                Assert.Equal(expected.Count, planet.Atmosphere.Composition.Count);
 
                 foreach (var gas in planet.Atmosphere.Composition)
                 {
-                    Assert.AreEqual(expected[gas.GasType.symbol], gas.surf_pressure, DELTA);
+                    Assert.Equal(expected[gas.GasType.symbol], gas.surf_pressure, DELTA);
                 }
             }
 
-            [TestCategory("Atmosphere")]
-            [TestMethod]
+            [Fact][Trait("Category", "Atmosphere")]
+            
             public void TestNoAtmosphereDefaultChemTable()
             {
                 var planet = GetTestPlanetNoAtmosphere();
                 var star = planet.Star;
                 Generator.CalculateGases(planet, ChemType.GetDefaultTable());
 
-                Assert.AreEqual(0, planet.Atmosphere.Composition.Count);
+                Assert.Empty(planet.Atmosphere.Composition);
             }
         }
     }
