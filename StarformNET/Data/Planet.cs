@@ -1,299 +1,96 @@
+using System.Text.Json.Serialization;
+
 namespace DLS.StarformNET.Data
 {
     using System;
     using System.Collections.Generic;
 
-    // TODO break this class up
-    // TODO orbit zone is supposedly no longer used anywhere. Check references and possibly remove.
-
     [Serializable]
     public class Planet : IEquatable<Planet>
     {
-        public int Position;
+        public int Position { get; set; }
+        public string Name { get; set; }
+        [JsonIgnore]
         public Star Star { get; set; }
-        public Atmosphere Atmosphere = new Atmosphere();
+        public Atmosphere Atmosphere { get; set; } = new Atmosphere();
 
-        #region Orbit data
+        public PlanetOrbitData PlanetOrbitData { get; }
 
-        /// <summary>
-        /// Semi-major axis of the body's orbit in astronomical units (au).
-        /// </summary>
-        public double SemiMajorAxisAU { get; set; }
+        public PlanetSizeAndMassData PlanetSizeAndMassData { get; }
 
-        /// <summary>
-        /// Eccentricity of the body's orbit.
-        /// </summary>
-        public double Eccentricity { get; set; }
+        public PlanetProperties PlanetProperties { get; }
 
-        /// <summary>
-        /// Axial tilt of the planet expressed in degrees.
-        /// </summary>
-        public double AxialTiltDegrees { get; set; }
+        public PlanetAtmosphericData PlanetAtmosphericData { get; }
 
-        /// <summary>
-        /// Orbital zone the planet is located in. Value is 1, 2, or 3. Used in
-        /// radius and volatile inventory calculations.
-        /// </summary>
-        public int OrbitZone { get; set; }
+        public PlanetTemperatureData PlanetTemperatureData { get; }
 
-        /// <summary>
-        /// The length of the planet's year in days.
-        /// </summary>
-        public double OrbitalPeriodDays { get; set; }
+        public PlanetCoverageData PlanetCoverageData { get; }
 
-        /// <summary>
-        /// Angular velocity about the planet's axis in radians/sec.
-        /// </summary>
-        public double AngularVelocityRadSec { get; set; }
-
-        /// <summary>
-        /// The length of the planet's day in hours.
-        /// </summary>
-        public double DayLengthHours { get; set; }
-
-        /// <summary>
-        /// The Hill sphere of the planet expressed in km.
-        /// </summary>
-        public double HillSphereKM { get; set; }
-
-        #endregion
-
-        #region Size & mass data
-
-        /// <summary>
-        /// The mass of the planet in units of Solar mass.
-        /// </summary>
-        public double MassSM { get; set; } 
-
-        /// <summary>
-        /// The mass of dust retained by the planet (ie, the mass of the planet
-        /// sans atmosphere). Given in units of Solar mass.
-        /// </summary>
-        public double DustMassSM { get; set; }
-
-        /// <summary>
-        /// The mass of gas retained by the planet (ie, the mass of its
-        /// atmosphere). Given in units of Solar mass.
-        /// </summary>
-        public double GasMassSM { get; set; }
-
-        /// <summary>
-        /// The velocity required to escape from the body given in cm/sec.
-        /// </summary>
-        public double EscapeVelocityCMSec { get; set; }
-
-        /// <summary>
-        /// The gravitational acceleration felt at the surface of the planet. Given in cm/sec^2
-        /// </summary>
-        public double SurfaceAccelerationCMSec2 { get; set; }
-
-        /// <summary>
-        /// The gravitational acceleration felt at the surface of the planet. Given as a fraction of Earth gravity (Gs).
-        /// </summary>
-        public double SurfaceGravityG { get; set; }
-
-        /// <summary>
-        /// The radius of the planet's core in km.
-        /// </summary>
-        public double CoreRadiusKM { get; set; }
-
-        /// <summary>
-        /// The radius of the planet's surface in km.
-        /// </summary>
-        public double RadiusKM { get; set; }
-
-        /// <summary>
-        /// The density of the planet given in g/cc. 
-        /// </summary>
-        public double DensityGCC { get; set; }
-
-        #endregion
-
-        #region Planet properties
-
-        public PlanetType Type { get; set; }
-
-        public bool IsGasGiant => Type == PlanetType.GasGiant ||
-                                  Type == PlanetType.SubGasGiant ||
-                                  Type == PlanetType.SubSubGasGiant;
-
-        public bool IsTidallyLocked { get; set; }
-
-        public bool IsEarthlike { get; set; }
-
-        public bool IsHabitable { get; set; }
-
-        public bool HasResonantPeriod { get; set; }
-
-        public bool HasGreenhouseEffect { get; set; }
-
-        #endregion
-
-        #region Moon data
-
-        public List<Planet> Moons { get; set; }
-
-        public double MoonSemiMajorAxisAU { get; set; }
-
-        public double MoonEccentricity { get; set; }
-
-        #endregion
-
-        #region Atmospheric data
-        /// <summary>
-        /// The root-mean-square velocity of N2 at the planet's exosphere given
-        /// in cm/sec. Used to determine where or not a planet is capable of
-        /// retaining an atmosphere.
-        /// </summary>
-        public double RMSVelocityCMSec { get; set; }
-
-        /// <summary>
-        /// The smallest molecular weight the planet is capable of retaining.
-        /// I believe this is in g/mol.
-        /// </summary>
-        public double MolecularWeightRetained { get; set; }
-
-        /// <summary>
-        /// Unitless value for the inventory of volatile gases that result from
-        /// outgassing. Used in the calculation of surface pressure. See Fogg
-        /// eq. 16. 
-        /// </summary>
-        public double VolatileGasInventory { get; set; } 
-
-        /// <summary>
-        /// Boiling point of water on the planet given in Kelvin.
-        /// </summary>
-        public double BoilingPointWaterKelvin { get; set; }
-
-        /// <summary>
-        /// Planetary albedo. Unitless value between 0 (no reflection) and 1 
-        /// (completely reflective).
-        /// </summary>
-        public double Albedo { get; set; }
-
-        #endregion
-
-        #region Temperature data
-        /// <summary>
-        /// Illumination received by the body at at the farthest point of its
-        /// orbit. 1.0 is the amount of illumination received by an object 1 au
-        /// from the Sun.
-        /// </summary>
-        public double Illumination { get; set; }
-
-        /// <summary>
-        /// Temperature at the body's exosphere given in Kelvin.
-        /// </summary>
-        public double ExosphereTempKelvin { get; set; }
-
-        /// <summary>
-        /// Temperature at the body's surface given in Kelvin.
-        /// </summary>
-        public double SurfaceTempKelvin { get; set; }
-
-        /// <summary>
-        /// Amount (in Kelvin) that the planet's surface temperature is being
-        /// increased by a runaway greenhouse effect.
-        /// </summary>
-        public double GreenhouseRiseKelvin { get; set; }
-
-        /// <summary>
-        /// Average daytime temperature in Kelvin.
-        /// </summary>
-        public double DaytimeTempKelvin { get; set; }
-
-        /// <summary>
-        /// Average nighttime temperature in Kelvin.
-        /// </summary>
-        public double NighttimeTempKelvin { get; set; }
-
-        /// <summary>
-        /// Maximum (summer/day) temperature in Kelvin.
-        /// </summary>
-        public double MaxTempKelvin { get; set; }
-
-        /// <summary>
-        /// Minimum (winter/night) temperature in Kelvin.
-        /// </summary>
-        public double MinTempKelvin { get; set; }
-
-        #endregion
-
-        #region Surface coverage
-
-        /// <summary>
-        /// Amount of the body's surface that is covered in water. Given as a
-        /// value between 0 (no water) and 1 (completely covered).
-        /// </summary>
-        public double WaterCoverFraction { get; set; }
-
-        /// <summary>
-        /// Amount of the body's surface that is obscured by cloud cover. Given
-        /// as a value between 0 (no cloud coverage) and 1 (surface not visible
-        /// at all).
-        /// </summary>
-        public double CloudCoverFraction { get; set; }
-
-        /// <summary>
-        /// Amount of the body's surface that is covered in ice. Given as a 
-        /// value between 0 (no ice) and 1 (completely covered).
-        /// </summary>
-        public double IceCoverFraction { get; set; }
-
-        #endregion
+        public PlanetMoonData PlanetMoonData { get; }
 
         public Planet()
         {
-
+            PlanetMoonData = new PlanetMoonData();
+            PlanetCoverageData = new PlanetCoverageData();
+            PlanetTemperatureData = new PlanetTemperatureData();
+            PlanetAtmosphericData = new PlanetAtmosphericData();
+            PlanetProperties = new PlanetProperties();
+            PlanetOrbitData = new PlanetOrbitData();
+            PlanetSizeAndMassData = new PlanetSizeAndMassData();
         }
 
         public Planet(PlanetSeed seed, Star star, int num)
         {
+            PlanetMoonData = new PlanetMoonData();
+            PlanetCoverageData = new PlanetCoverageData();
+            PlanetTemperatureData = new PlanetTemperatureData();
+            PlanetAtmosphericData = new PlanetAtmosphericData();
+            PlanetProperties = new PlanetProperties();
             Star = star;
             Position = num;
-            SemiMajorAxisAU = seed.SemiMajorAxisAU;
-            Eccentricity = seed.Eccentricity;
-            MassSM = seed.Mass;
-            DustMassSM = seed.DustMass;
-            GasMassSM = seed.GasMass;
+            PlanetOrbitData = new PlanetOrbitData(seed.SemiMajorAxisAU, seed.Eccentricity);
+            PlanetSizeAndMassData = new PlanetSizeAndMassData(seed.Mass, seed.DustMass, seed.GasMass);
         }
 
         public bool Equals(Planet other)
         {
             return Position == other.Position &&
-                Utilities.AlmostEqual(SemiMajorAxisAU, other.SemiMajorAxisAU) &&
-                Utilities.AlmostEqual(Eccentricity, other.Eccentricity) &&
-                Utilities.AlmostEqual(AxialTiltDegrees, other.AxialTiltDegrees) &&
-                OrbitZone == other.OrbitZone &&
-                Utilities.AlmostEqual(OrbitalPeriodDays, other.OrbitalPeriodDays) &&
-                Utilities.AlmostEqual(DayLengthHours, other.DayLengthHours) &&
-                Utilities.AlmostEqual(HillSphereKM, other.HillSphereKM) &&
-                Utilities.AlmostEqual(MassSM, other.MassSM) &&
-                Utilities.AlmostEqual(DustMassSM, other.DustMassSM) &&
-                Utilities.AlmostEqual(GasMassSM, other.GasMassSM) &&
-                Utilities.AlmostEqual(EscapeVelocityCMSec, other.EscapeVelocityCMSec) &&
-                Utilities.AlmostEqual(SurfaceAccelerationCMSec2, other.SurfaceAccelerationCMSec2) &&
-                Utilities.AlmostEqual(SurfaceGravityG, other.SurfaceGravityG) &&
-                Utilities.AlmostEqual(CoreRadiusKM, other.CoreRadiusKM) &&
-                Utilities.AlmostEqual(RadiusKM, other.RadiusKM) &&
-                Utilities.AlmostEqual(DensityGCC, other.DensityGCC) &&
-                Moons.Count == other.Moons.Count &&
-                Utilities.AlmostEqual(RMSVelocityCMSec, other.RMSVelocityCMSec) &&
-                Utilities.AlmostEqual(MolecularWeightRetained, other.MolecularWeightRetained) &&
-                Utilities.AlmostEqual(VolatileGasInventory, other.VolatileGasInventory) &&
-                Utilities.AlmostEqual(BoilingPointWaterKelvin, other.BoilingPointWaterKelvin) &&
-                Utilities.AlmostEqual(Albedo, other.Albedo) &&
-                Utilities.AlmostEqual(Illumination, other.Illumination) &&
-                Utilities.AlmostEqual(ExosphereTempKelvin, other.ExosphereTempKelvin) &&
-                Utilities.AlmostEqual(SurfaceTempKelvin, other.SurfaceTempKelvin) &&
-                Utilities.AlmostEqual(GreenhouseRiseKelvin, other.GreenhouseRiseKelvin) &&
-                Utilities.AlmostEqual(DaytimeTempKelvin, other.DaytimeTempKelvin) &&
-                Utilities.AlmostEqual(NighttimeTempKelvin, other.NighttimeTempKelvin) &&
-                Utilities.AlmostEqual(MaxTempKelvin, other.MaxTempKelvin) &&
-                Utilities.AlmostEqual(MinTempKelvin, other.MinTempKelvin) &&
-                Utilities.AlmostEqual(WaterCoverFraction, other.WaterCoverFraction) &&
-                Utilities.AlmostEqual(CloudCoverFraction, other.CloudCoverFraction) &&
-                Utilities.AlmostEqual(IceCoverFraction, other.IceCoverFraction);
+                Utilities.AlmostEqual(PlanetOrbitData.SemiMajorAxisAU, other.PlanetOrbitData.SemiMajorAxisAU) &&
+                Utilities.AlmostEqual(PlanetOrbitData.Eccentricity, other.PlanetOrbitData.Eccentricity) &&
+                Utilities.AlmostEqual(PlanetOrbitData.AxialTiltDegrees, other.PlanetOrbitData.AxialTiltDegrees) && PlanetOrbitData.OrbitZone == other.PlanetOrbitData.OrbitZone &&
+                Utilities.AlmostEqual(PlanetOrbitData.OrbitalPeriodDays, other.PlanetOrbitData.OrbitalPeriodDays) &&
+                Utilities.AlmostEqual(PlanetOrbitData.DayLengthHours, other.PlanetOrbitData.DayLengthHours) &&
+                Utilities.AlmostEqual(PlanetOrbitData.HillSphereKM, other.PlanetOrbitData.HillSphereKM) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.MassSM, other.PlanetSizeAndMassData.MassSM) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.DustMassSM, other.PlanetSizeAndMassData.DustMassSM) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.GasMassSM, other.PlanetSizeAndMassData.GasMassSM) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.EscapeVelocityCMSec, other.PlanetSizeAndMassData.EscapeVelocityCMSec) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.SurfaceAccelerationCMSec2, other.PlanetSizeAndMassData.SurfaceAccelerationCMSec2) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.SurfaceGravityG, other.PlanetSizeAndMassData.SurfaceGravityG) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.CoreRadiusKM, other.PlanetSizeAndMassData.CoreRadiusKM) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.RadiusKM, other.PlanetSizeAndMassData.RadiusKM) &&
+                Utilities.AlmostEqual(PlanetSizeAndMassData.DensityGCC, other.PlanetSizeAndMassData.DensityGCC) && PlanetMoonData.Moons.Count == other.PlanetMoonData.Moons.Count &&
+                Utilities.AlmostEqual(PlanetAtmosphericData.RMSVelocityCMSec, other.PlanetAtmosphericData.RMSVelocityCMSec) &&
+                Utilities.AlmostEqual(PlanetAtmosphericData.MolecularWeightRetained, other.PlanetAtmosphericData.MolecularWeightRetained) &&
+                Utilities.AlmostEqual(PlanetAtmosphericData.VolatileGasInventory, other.PlanetAtmosphericData.VolatileGasInventory) &&
+                Utilities.AlmostEqual(PlanetAtmosphericData.BoilingPointWaterKelvin, other.PlanetAtmosphericData.BoilingPointWaterKelvin) &&
+                Utilities.AlmostEqual(PlanetAtmosphericData.Albedo, other.PlanetAtmosphericData.Albedo) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.Illumination, other.PlanetTemperatureData.Illumination) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.ExosphereTempKelvin, other.PlanetTemperatureData.ExosphereTempKelvin) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.SurfaceTempKelvin, other.PlanetTemperatureData.SurfaceTempKelvin) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.GreenhouseRiseKelvin, other.PlanetTemperatureData.GreenhouseRiseKelvin) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.DaytimeTempKelvin, other.PlanetTemperatureData.DaytimeTempKelvin) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.NighttimeTempKelvin, other.PlanetTemperatureData.NighttimeTempKelvin) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.MaxTempKelvin, other.PlanetTemperatureData.MaxTempKelvin) &&
+                Utilities.AlmostEqual(PlanetTemperatureData.MinTempKelvin, other.PlanetTemperatureData.MinTempKelvin) &&
+                Utilities.AlmostEqual(PlanetCoverageData.WaterCoverFraction, other.PlanetCoverageData.WaterCoverFraction) &&
+                Utilities.AlmostEqual(PlanetCoverageData.CloudCoverFraction, other.PlanetCoverageData.CloudCoverFraction) &&
+                Utilities.AlmostEqual(PlanetCoverageData.IceCoverFraction, other.PlanetCoverageData.IceCoverFraction);
+        }
+
+        public override string ToString()
+        {
+            return $"{PlanetProperties.Type}, Moons: {PlanetMoonData.Moons.Count}, Temp: {PlanetTemperatureData.DaytimeTempKelvin}/{PlanetTemperatureData.NighttimeTempKelvin}";
         }
     }
 }
