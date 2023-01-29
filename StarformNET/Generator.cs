@@ -100,15 +100,15 @@ namespace DLS.StarformNET
             {
                 if ((planet.PlanetSizeAndMassData.GasMassSM / planet.PlanetSizeAndMassData.MassSM) < 0.20)
                 {
-                    planet.PlanetProperties.Type = PlanetType.SubSubGasGiant;
+                    planet.PlanetProperties.PlanetType = PlanetType.SubSubGasGiant;
                 }
                 else if ((planet.PlanetSizeAndMassData.MassSM * GlobalConstants.SUN_MASS_IN_EARTH_MASSES) < 20.0)
                 {
-                    planet.PlanetProperties.Type = PlanetType.SubGasGiant;
+                    planet.PlanetProperties.PlanetType = PlanetType.SubGasGiant;
                 }
                 else
                 {
-                    planet.PlanetProperties.Type = PlanetType.GasGiant;
+                    planet.PlanetProperties.PlanetType = PlanetType.GasGiant;
                 }
             }
             else // If not, it's rocky.
@@ -208,16 +208,16 @@ namespace DLS.StarformNET
                 {
                     if (!isMoon && ((planet.PlanetSizeAndMassData.MassSM * GlobalConstants.SUN_MASS_IN_EARTH_MASSES) < GlobalConstants.ASTEROID_MASS_LIMIT))
                     {
-                        planet.PlanetProperties.Type = PlanetType.Asteroids;
+                        planet.PlanetProperties.PlanetType = PlanetType.Asteroids;
                     }
                     else
                     {
-                        planet.PlanetProperties.Type = PlanetType.Barren;
+                        planet.PlanetProperties.PlanetType = PlanetType.Barren;
                     }
                 }
                 else if ((planet.Atmosphere.SurfacePressure > 6000.0) && (planet.PlanetAtmosphericData.MolecularWeightRetained <= 2.0)) // Retains Hydrogen
                 {
-                    planet.PlanetProperties.Type = PlanetType.SubSubGasGiant;
+                    planet.PlanetProperties.PlanetType = PlanetType.SubSubGasGiant;
                     planet.Atmosphere.Composition = new List<Gas>();
                 }
                 else
@@ -226,36 +226,36 @@ namespace DLS.StarformNET
                     // TODO remove PlanetType enum entirely and replace it with a more flexible classification systme
                     if (planet.PlanetCoverageData.WaterCoverFraction >= 0.95) // >95% water
                     {
-                        planet.PlanetProperties.Type = PlanetType.Water;
+                        planet.PlanetProperties.PlanetType = PlanetType.Water;
                     }
                     else if (planet.PlanetCoverageData.IceCoverFraction >= 0.95) // >95% ice
                     {
-                        planet.PlanetProperties.Type = PlanetType.Ice;
+                        planet.PlanetProperties.PlanetType = PlanetType.Ice;
                     }
                     else if (planet.PlanetCoverageData.WaterCoverFraction > 0.05) // Terrestrial
                     {
-                        planet.PlanetProperties.Type = PlanetType.Terrestrial;
+                        planet.PlanetProperties.PlanetType = PlanetType.Terrestrial;
                     }
                     else if (planet.PlanetTemperatureData.MaxTempKelvin > planet.PlanetAtmosphericData.BoilingPointWaterKelvin) // Hot = Venusian
                     {
-                        planet.PlanetProperties.Type = PlanetType.Venusian;
+                        planet.PlanetProperties.PlanetType = PlanetType.Venusian;
                     }
                     else if ((planet.PlanetSizeAndMassData.GasMassSM / planet.PlanetSizeAndMassData.MassSM) > 0.0001) // Accreted gas, but no greenhouse or liquid water make it an ice world
                     {
-                        planet.PlanetProperties.Type = PlanetType.Ice;
+                        planet.PlanetProperties.PlanetType = PlanetType.Ice;
                         planet.PlanetCoverageData.IceCoverFraction = 1.0;
                     }
                     else if (planet.Atmosphere.SurfacePressure <= 250.0) // Thin air = Martian
                     {
-                        planet.PlanetProperties.Type = PlanetType.Martian;
+                        planet.PlanetProperties.PlanetType = PlanetType.Martian;
                     }
                     else if (planet.PlanetTemperatureData.SurfaceTempKelvin < GlobalConstants.FREEZING_POINT_OF_WATER)
                     {
-                        planet.PlanetProperties.Type = PlanetType.Ice;
+                        planet.PlanetProperties.PlanetType = PlanetType.Ice;
                     }
                     else
                     {
-                        planet.PlanetProperties.Type = PlanetType.Unknown;
+                        planet.PlanetProperties.PlanetType = PlanetType.Unknown;
                     }
                 }
             }

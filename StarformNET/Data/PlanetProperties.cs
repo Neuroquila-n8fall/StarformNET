@@ -6,11 +6,9 @@ public class PlanetProperties
     {
     }
 
-    public PlanetType Type { get; set; }
+    public PlanetType PlanetType { get; set; }
 
-    public bool IsGasGiant => System.Type == PlanetType.GasGiant ||
-                              System.Type == PlanetType.SubGasGiant ||
-                              System.Type == PlanetType.SubSubGasGiant;
+    public bool IsGasGiant => PlanetType is PlanetType.GasGiant or PlanetType.SubGasGiant or PlanetType.SubSubGasGiant;
 
     public bool IsTidallyLocked { get; set; }
     public bool IsEarthlike { get; set; }

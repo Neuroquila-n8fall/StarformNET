@@ -90,7 +90,7 @@ namespace DLS.StarformNET.Data
 
         public override string ToString()
         {
-            return $"{PlanetProperties.Type}, Moons: {PlanetMoonData.Moons.Count}, Temp: {PlanetTemperatureData.DaytimeTempKelvin}/{PlanetTemperatureData.NighttimeTempKelvin}";
+            return $"{PlanetProperties.PlanetType}, Moons: {PlanetMoonData.Moons.Count}, Temp: {PlanetTemperatureData.DaytimeTempKelvin}/{PlanetTemperatureData.NighttimeTempKelvin}";
         }
     }
 }

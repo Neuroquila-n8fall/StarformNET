@@ -151,7 +151,7 @@ namespace DLS.StarformNET
                 clouds <= 80.0 &&
                 seas >= 50.0 &&
                 seas <= 80.0 &&
-                planet.PlanetProperties.Type != PlanetType.Water &&
+                planet.PlanetProperties.PlanetType != PlanetType.Water &&
                 planet.Atmosphere.Breathability == Data.Breathability.Breathable;
         }
 
