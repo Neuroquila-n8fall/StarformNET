@@ -18,10 +18,10 @@ namespace DLS.StarformNET
 
             if (sun.Luminosity == 0)
             {
-                sun.Luminosity = Environment.Luminosity(sun.Mass);
+                sun.Luminosity = HelperFunctions.Luminosity(sun.Mass);
             }
 
-            sun.EcosphereRadiusAU = Environment.StarEcosphereRadiusAU(sun.Luminosity);
+            sun.EcosphereRadiusAU = HelperFunctions.StarEcosphereRadiusAU(sun.Luminosity);
             sun.Life = 1.0E10 * (sun.Mass / sun.Luminosity);
 
             sun.AgeYears = Utilities.RandomNumber(

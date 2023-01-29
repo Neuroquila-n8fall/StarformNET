@@ -10,39 +10,75 @@ namespace DLS.StarformNET.Data
     // TODO break out abundance into a separate class for star/planet profiles
     public class ChemType
     {
-        public int    num        { get; set; }
-        public string symbol     { get; set; }
-        public string HTMLSymbol { get; set; }
+        /// <summary>
+        /// Number of this element inside the periodic table
+        /// </summary>
+        public int    Num        { get; set; }
+        /// <summary>
+        /// Chemical Symbol
+        /// </summary>
+        public string Symbol     { get; set; }
+        /// <summary>
+        /// HTML Encoded Symbol
+        /// </summary>
+        public string HtmlSymbol { get; set; }
+        /// <summary>
+        /// Name of this element (eng.)
+        /// </summary>
         public string Name       { get; set; }
-        public double weight     { get; set; }
-        public double melt       { get; set; }
-        public double boil       { get; set; }
-        public double density    { get; set; }
-        public double abunde     { get; set; }
-        public double abunds     { get; set; }  // Solar system abundance
-        public double reactivity { get; set; }
-        public double max_ipp     { get; set; } // Max inspired partial pressure im millibars
+        /// <summary>
+        /// Molecular Weight (mol)
+        /// </summary>
+        public double Weight     { get; set; }
+        /// <summary>
+        /// Melting Point
+        /// </summary>
+        public double MeltingPoint       { get; set; }
+        /// <summary>
+        /// Boiling Point
+        /// </summary>
+        public double BoilingPoint       { get; set; }
+        /// <summary>
+        /// Density
+        /// </summary>
+        public double Density    { get; set; }
+        /// <summary>
+        /// Abundance, unknown
+        /// </summary>
+        public double Abunde     { get; set; }
+        /// <summary>
+        /// Abundance relative to Sun (solar)
+        /// </summary>
+        public double SolarAbundance     { get; set; }  // Solar system abundance
+        /// <summary>
+        /// Reactivity. The higher, the more reactive
+        /// </summary>
+        public double Reactivity { get; set; }
+        /// <summary>
+        /// Max inspired partial pressure im millibars
+        /// </summary>
+        public double MaxIpp     { get; set; }
 
         public ChemType(int an, string sym, string htmlsym, string name, double weight, double m, double b, double dens, double ae, double abs, double rea, double mipp)
         {
-            num = an;
-            symbol = sym;
-            HTMLSymbol = htmlsym;
+            Num = an;
+            Symbol = sym;
+            HtmlSymbol = htmlsym;
             Name = name;
-            this.weight = weight;
-            melt = m;
-            boil = b;
-            density = dens;
-            abunde = ae;
-            abunds = abs;
-            reactivity = rea;
-            max_ipp = mipp;
+            Weight = weight;
+            MeltingPoint = m;
+            BoilingPoint = b;
+            Density = dens;
+            Abunde = ae;
+            SolarAbundance = abs;
+            Reactivity = rea;
+            MaxIpp = mipp;
         }
 
         public static ChemType[] LoadFromFile(string file)
         {
             var chemTable = new List<ChemType>();
-            using (StreamReader r = new StreamReader(file))
+            using (var r = new StreamReader(file))
             {
                 var json = r.ReadToEnd();
                 var options = new JsonSerializerOptions()
@@ -64,10 +100,10 @@ namespace DLS.StarformNET.Data
                     var abunde = item[7].GetDouble();
                     var abunds = item[8].GetDouble();
                     var rea = item[9].GetDouble();
-                    var maxIPP = (item.Count == 11 ? item[10].GetDouble() : 0) * GlobalConstants.MMHG_TO_MILLIBARS;
+                    var maxIpp = (item.Count == 11 ? item[10].GetDouble() : 0) * GlobalConstants.MMHG_TO_MILLIBARS;
 
 
-                    chemTable.Add(new ChemType(num, sym, sym, name, weight, melt, boil, dens, abunde, abunds, rea, maxIPP));
+                    chemTable.Add(new ChemType(num, sym, sym, name, weight, melt, boil, dens, abunde, abunds, rea, maxIpp));
                 }
 
                 return chemTable.ToArray();
@@ -82,7 +118,7 @@ namespace DLS.StarformNET.Data
             // https://en.wikipedia.org/wiki/Abundances_of_the_elements_(data_page)#Sun_and_solar_system (column Y2)
 
             //                An                     sym     HTML symbol                      name                    Aw    melt    boil   dens       ABUNDe       ABUNDs         Rea    Max inspired pp
-            return new ChemType[]
+            return new[]
             {
                 new ChemType(GlobalConstants.AN_H,  "H",    "H<SUB><SMALL>2</SMALL></SUB>",  "Hydrogen",         1.0079,  14.06,  20.40,  8.99e-05,  0.00125893,  27925.4,       1,     0.0                        ),
                 new ChemType(GlobalConstants.AN_HE, "He",   "He",                            "Helium",           4.0026,   3.46,   4.20,  0.0001787, 7.94328e-09, 2722.7,        0,     GlobalConstants.MAX_HE_IPP ),

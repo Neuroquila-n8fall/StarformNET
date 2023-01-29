@@ -45,12 +45,12 @@ namespace DLS.StarformNET
         {
             SetInitialConditions(innerDust, outerDust);
 
-            double planet_inner_bound = NearestPlanet(stellarMassRatio);
-            double planet_outer_bound = outerPlanetLimit == 0 
+            var planet_inner_bound = NearestPlanet(stellarMassRatio);
+            var planet_outer_bound = outerPlanetLimit == 0 
                 ? FarthestPlanet(stellarMassRatio) 
                 : outerPlanetLimit;
 
-            PlanetSeed seeds = seedSystem;
+            var seeds = seedSystem;
             while (_dustLeft)
             {
                 double a, e;
@@ -66,7 +66,7 @@ namespace DLS.StarformNET
                     e = Utilities.RandomEccentricity();
                 }
 
-                double mass = GlobalConstants.PROTOPLANET_MASS;
+                var mass = GlobalConstants.PROTOPLANET_MASS;
                 double dust_mass = 0;
                 double gas_mass = 0;
 
@@ -77,7 +77,7 @@ namespace DLS.StarformNET
                     //Trace.TraceInformation("Injecting protoplanet at {0:0.00} AU", a);
 
                     _dustDensity = dustDensityCoeff * Math.Sqrt(stellarMassRatio) * Math.Exp(-GlobalConstants.ALPHA * Math.Pow(a, (1.0 / GlobalConstants.N)));
-                    double crit_mass = CriticalLimit(a, e, stellarLumRatio);
+                    var crit_mass = CriticalLimit(a, e, stellarLumRatio);
                     AccreteDust(ref mass, ref dust_mass, ref gas_mass, a, e, crit_mass, planet_inner_bound, planet_outer_bound);
 
                     dust_mass += GlobalConstants.PROTOPLANET_MASS;
@@ -112,12 +112,14 @@ namespace DLS.StarformNET
             _histHead = new Generation();
 
             _planetHead = null;
-            _dustHead = new DustRecord();
-            _dustHead.NextBand = null;
-            _dustHead.OuterEdge = outer_limit_of_dust;
-            _dustHead.InnerEdge = inner_limit_of_dust;
-            _dustHead.DustPresent = true;
-            _dustHead.GasPresent = true;
+            _dustHead = new DustRecord
+            {
+                NextBand = null,
+                OuterEdge = outer_limit_of_dust,
+                InnerEdge = inner_limit_of_dust,
+                DustPresent = true,
+                GasPresent = true
+            };
             _dustLeft = true;
             _cloudEccentricity = CloudEccentricity;
 
@@ -299,7 +301,7 @@ namespace DLS.StarformNET
 
         private double CollectDust(double last_mass, ref double new_dust, ref double new_gas, double a, double e, double crit_mass, ref DustRecord dust_band)
         {
-            double temp = last_mass / (1.0 + last_mass);
+            var temp = last_mass / (1.0 + last_mass);
             _reducedMass = Math.Pow(temp, (1.0 / 4.0));
             _rInner = InnerEffectLimit(a, e, _reducedMass);
             _rOuter = OuterEffectLimit(a, e, _reducedMass);
@@ -315,7 +317,7 @@ namespace DLS.StarformNET
             }
             else
             {
-                double gas_density = 0.0;
+                var gas_density = 0.0;
                 double temp_density;
                 double mass_density;
                 if (dust_band.DustPresent == false)
@@ -343,16 +345,16 @@ namespace DLS.StarformNET
                 }
                 else
                 {
-                    double bandwidth = (_rOuter - _rInner);
+                    var bandwidth = (_rOuter - _rInner);
 
-                    double temp1 = _rOuter - dust_band.OuterEdge;
+                    var temp1 = _rOuter - dust_band.OuterEdge;
                     if (temp1 < 0.0)
                     {
                         temp1 = 0.0;
                     }
-                    double width = bandwidth - temp1;
+                    var width = bandwidth - temp1;
 
-                    double temp2 = dust_band.InnerEdge - _rInner;
+                    var temp2 = dust_band.InnerEdge - _rInner;
                     if (temp2 < 0.0)
                     {
                         temp2 = 0.0;
@@ -360,15 +362,15 @@ namespace DLS.StarformNET
                     width = width - temp2;
 
                     temp = 4.0 * Math.PI * Math.Pow(a, 2.0) * _reducedMass * (1.0 - e * (temp1 - temp2) / bandwidth);
-                    double volume = temp * width;
+                    var volume = temp * width;
 
-                    double new_mass = volume * mass_density;
+                    var new_mass = volume * mass_density;
                     new_gas = volume * gas_density;
                     new_dust = new_mass - new_gas;
 
                     double next_dust = 0;
                     double next_gas = 0;
-                    double next_mass = CollectDust(last_mass, ref next_dust, ref next_gas, a, e, crit_mass, ref dust_band.NextBand);
+                    var next_mass = CollectDust(last_mass, ref next_dust, ref next_gas, a, e, crit_mass, ref dust_band.NextBand);
 
                     new_gas = new_gas + next_gas;
                     new_dust = new_dust + next_dust;
@@ -380,14 +382,14 @@ namespace DLS.StarformNET
 
         private double CriticalLimit(double orb_radius, double eccentricity, double stell_luminosity_ratio)
         {
-            double perihelion_dist = (orb_radius - orb_radius * eccentricity);
-            double temp = perihelion_dist * Math.Sqrt(stell_luminosity_ratio);
+            var perihelion_dist = (orb_radius - orb_radius * eccentricity);
+            var temp = perihelion_dist * Math.Sqrt(stell_luminosity_ratio);
             return GlobalConstants.B * Math.Pow(temp, -0.75);
         }
 
         private void AccreteDust(ref double seed_mass, ref double new_dust, ref double new_gas, double a, double e, double crit_mass, double body_inner_bound, double body_outer_bound)
         {
-            double new_mass = seed_mass;
+            var new_mass = seed_mass;
             double temp_mass;
 
             do
@@ -403,12 +405,12 @@ namespace DLS.StarformNET
 
         private bool DoMoons(PlanetSeed planet, double mass, double critMass, double dustMass, double gasMass)
         {
-            bool finished = false;
-            double existingMass = 0.0;
+            var finished = false;
+            var existingMass = 0.0;
 
             if (planet.FirstMoon != null)
             {
-                for (PlanetSeed m = planet.FirstMoon; m != null; m = m.NextPlanet)
+                for (var m = planet.FirstMoon; m != null; m = m.NextPlanet)
                 {
                     existingMass += m.Mass;
                 }
@@ -418,13 +420,13 @@ namespace DLS.StarformNET
             {
                 if (mass * GlobalConstants.SUN_MASS_IN_EARTH_MASSES < 2.5 && mass * GlobalConstants.SUN_MASS_IN_EARTH_MASSES > .0001 && existingMass < planet.Mass * .05)
                 {
-                    PlanetSeed moon = new PlanetSeed(0, 0, mass, dustMass, gasMass);
+                    var moon = new PlanetSeed(0, 0, mass, dustMass, gasMass);
 
                     if (moon.DustMass + moon.GasMass > planet.DustMass + planet.GasMass)
                     {
-                        double tempDust = planet.DustMass;
-                        double tempGas = planet.GasMass;
-                        double tempMass = planet.Mass;
+                        var tempDust = planet.DustMass;
+                        var tempGas = planet.GasMass;
+                        var tempMass = planet.Mass;
 
                         planet.DustMass = moon.DustMass;
                         planet.GasMass = moon.GasMass;
@@ -488,7 +490,7 @@ namespace DLS.StarformNET
             var finished = false;
             for (thePlanet = _planetHead; thePlanet != null; thePlanet = thePlanet.NextPlanet)
             {
-                double diff = thePlanet.SemiMajorAxisAU - a;
+                var diff = thePlanet.SemiMajorAxisAU - a;
                 double dist1;
                 double dist2;
 
@@ -514,7 +516,7 @@ namespace DLS.StarformNET
                 {
                     double new_dust = 0;
                     double new_gas = 0;
-                    double new_a = (thePlanet.Mass + mass) / ((thePlanet.Mass / thePlanet.SemiMajorAxisAU) + (mass / a));
+                    var new_a = (thePlanet.Mass + mass) / ((thePlanet.Mass / thePlanet.SemiMajorAxisAU) + (mass / a));
                     
                     e = GetNewEccentricity(thePlanet, e, a, mass, new_a);
 

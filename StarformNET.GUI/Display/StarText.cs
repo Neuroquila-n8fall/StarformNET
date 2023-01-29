@@ -28,7 +28,7 @@ namespace DLS.StarformNET.Display
         /// </summary>
         public static string GetAgeStringRel(Star star, bool showUnits=true)
         {
-            var age = String.Format("{0:0.00}", star.AgeYears / GlobalConstants.SUN_AGE_IN_YEARS);
+            var age = $"{star.AgeYears / GlobalConstants.SUN_AGE_IN_YEARS:0.00}";
             var units = showUnits ? " Solar Ages" : "";
             return age + units;
         }
@@ -38,7 +38,7 @@ namespace DLS.StarformNET.Display
         /// using scientific notation.
         public static string GetAgeStringYearsSciN(Star star, bool showUnits=true)
         {
-            var age = String.Format("{0:E2}", star.AgeYears);
+            var age = $"{star.AgeYears:E2}";
             var units = showUnits ? " Years" : "";
             return age + units;
         }
@@ -49,7 +49,7 @@ namespace DLS.StarformNET.Display
         /// </summary>
         public static string GetLuminosityRel(Star star, bool showUnits=true)
         {
-            var lum = String.Format("{0:0.00}", star.Luminosity);
+            var lum = $"{star.Luminosity:0.00}";
             var units = showUnits ? " Solar Luminosity" : "";
             return lum + units;
         }
@@ -60,7 +60,7 @@ namespace DLS.StarformNET.Display
         /// </summary>
         public static string GetLuminosityPercent(Star star, bool showUnits=true)
         {
-            var lum = String.Format("{0:0.}", star.Luminosity * 100);
+            var lum = $"{star.Luminosity * 100:0.}";
             var units = showUnits ? "% Sol" : "";
             return lum + units;
         }
@@ -71,7 +71,7 @@ namespace DLS.StarformNET.Display
         /// </summary>
         public static string GetMassRel(Star star, bool showUnits=true)
         {
-            var mass = String.Format("{0:0.00}", star.Mass);
+            var mass = $"{star.Mass:0.00}";
             var units = showUnits ? " Solar Masses" : "";
             return mass + units;
         }
@@ -82,7 +82,7 @@ namespace DLS.StarformNET.Display
         /// </summary>
         public static string GetMassPercent(Star star, bool showUnits = true)
         {
-            var mass = String.Format("{0:0.}", star.Mass * 100);
+            var mass = $"{star.Mass * 100:0.}";
             var units = showUnits ? "% Sol" : "";
             return mass + units;
         }

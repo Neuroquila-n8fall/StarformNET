@@ -1,10 +1,12 @@
 namespace DLS.StarformNET
 {
     using System;
+    using System.ComponentModel;
+    using System.Reflection;
     using Data;
 
     // TODO Figure out a way to logically break this class up
-    public static class Environment
+    public static class HelperFunctions
     {
         /// <summary>
         /// Returns the illumination of a body at its farthest point from a
@@ -112,7 +114,7 @@ namespace DLS.StarformNET
         /// </summary>
         public static bool IsTidallyLocked(Planet planet)
         {
-            return (int) planet.DayLengthHours == (int) (planet.OrbitalPeriodDays * 24);
+            return (int) planet.PlanetOrbitData.DayLengthHours == (int) (planet.PlanetOrbitData.OrbitalPeriodDays * 24);
         }
 
         /// <summary>
@@ -121,7 +123,7 @@ namespace DLS.StarformNET
         public static bool IsHabitable(Planet planet)
         {
             return planet.Atmosphere.Breathability == Data.Breathability.Breathable &&
-                   !planet.HasResonantPeriod &&
+                   !planet.PlanetProperties.HasResonantPeriod &&
                    !IsTidallyLocked(planet);
         }
 
@@ -130,16 +132,16 @@ namespace DLS.StarformNET
         /// </summary>
         public static bool IsEarthlike(Planet planet)
         {
-            double relTemp = (planet.SurfaceTempKelvin - GlobalConstants.FREEZING_POINT_OF_WATER) -
-                             GlobalConstants.EARTH_AVERAGE_CELSIUS;
-            double seas = planet.WaterCoverFraction * 100.0;
-            double clouds = planet.CloudCoverFraction * 100.0;
-            double pressure = planet.Atmosphere.SurfacePressure / GlobalConstants.EARTH_SURF_PRES_IN_MILLIBARS;
-            double ice = planet.IceCoverFraction * 100.0;
+            var relTemp = (planet.PlanetTemperatureData.SurfaceTempKelvin - GlobalConstants.FREEZING_POINT_OF_WATER) -
+                          GlobalConstants.EARTH_AVERAGE_CELSIUS;
+            var seas = planet.PlanetCoverageData.WaterCoverFraction * 100.0;
+            var clouds = planet.PlanetCoverageData.CloudCoverFraction * 100.0;
+            var pressure = planet.Atmosphere.SurfacePressure / GlobalConstants.EARTH_SURF_PRES_IN_MILLIBARS;
+            var ice = planet.PlanetCoverageData.IceCoverFraction * 100.0;
 
             return
-                planet.SurfaceGravityG >= .8 &&
-                planet.SurfaceGravityG <= 1.2 &&
+                planet.PlanetSizeAndMassData.SurfaceGravityG >= .8 &&
+                planet.PlanetSizeAndMassData.SurfaceGravityG <= 1.2 &&
                 relTemp >= -2.0 &&
                 relTemp <= 3.0 &&
                 ice <= 10.0 &&
@@ -149,7 +151,7 @@ namespace DLS.StarformNET
                 clouds <= 80.0 &&
                 seas >= 50.0 &&
                 seas <= 80.0 &&
-                planet.Type != PlanetType.Water &&
+                planet.PlanetProperties.Type != PlanetType.Water &&
                 planet.Atmosphere.Breathability == Data.Breathability.Breathable;
         }
 
@@ -275,7 +277,7 @@ namespace DLS.StarformNET
         /// <returns>Density in grams/cc</returns>
         public static double EmpiricalDensity(double mass, double orbRadius, double rEcosphere, bool isGasGiant)
         {
-            double density = Math.Pow(mass * GlobalConstants.SUN_MASS_IN_EARTH_MASSES, (1.0 / 8.0));
+            var density = Math.Pow(mass * GlobalConstants.SUN_MASS_IN_EARTH_MASSES, (1.0 / 8.0));
             density *= Utilities.Pow1_4(rEcosphere / orbRadius);
 
             if (isGasGiant)
@@ -298,7 +300,7 @@ namespace DLS.StarformNET
         {
             mass = mass * GlobalConstants.SOLAR_MASS_IN_GRAMS;
             equatRadius = equatRadius * GlobalConstants.CM_PER_KM;
-            double volume = (4.0 * Math.PI * Utilities.Pow3(equatRadius)) / 3.0;
+            var volume = (4.0 * Math.PI * Utilities.Pow3(equatRadius)) / 3.0;
             return (mass / volume);
         }
 
@@ -394,9 +396,9 @@ namespace DLS.StarformNET
         /// <returns>Angular velocity in radians/sec</returns>
         public static double AngularVelocity(Planet planet)
         {
-            return AngularVelocity(planet.MassSM,
-                planet.RadiusKM, planet.DensityGCC, planet.SemiMajorAxisAU,
-                planet.IsGasGiant, planet.Star.Mass, planet.Star.AgeYears);
+            return AngularVelocity(planet.PlanetSizeAndMassData.MassSM,
+                planet.PlanetSizeAndMassData.RadiusKM, planet.PlanetSizeAndMassData.DensityGCC, planet.PlanetOrbitData.SemiMajorAxisAU,
+                planet.PlanetProperties.IsGasGiant, planet.Star.Mass, planet.Star.AgeYears);
         }
 
         /// <summary>
@@ -942,11 +944,11 @@ namespace DLS.StarformNET
         /// </summary>
         public static double MinMolecularWeight(Planet planet)
         {
-            var surfGrav = planet.SurfaceGravityG;
-            var mass = planet.MassSM;
-            var radius = planet.RadiusKM;
-            var exosphereTemp = planet.ExosphereTempKelvin;
-            var temp = planet.ExosphereTempKelvin;
+            var surfGrav = planet.PlanetSizeAndMassData.SurfaceGravityG;
+            var mass = planet.PlanetSizeAndMassData.MassSM;
+            var radius = planet.PlanetSizeAndMassData.RadiusKM;
+            var exosphereTemp = planet.PlanetTemperatureData.ExosphereTempKelvin;
+            var temp = planet.PlanetTemperatureData.ExosphereTempKelvin;
             var target = 5.0E9;
 
             var guess1 = MoleculeLimit(mass, radius, temp);
@@ -1016,84 +1018,84 @@ namespace DLS.StarformNET
             double waterRaw;
             double cloudsRaw;
             double greenhouseTemp;
-            bool boilOff = false;
+            var boilOff = false;
 
             if (first)
             {
-                planet.Albedo = GlobalConstants.EARTH_ALBEDO;
+                planet.PlanetAtmosphericData.Albedo = GlobalConstants.EARTH_ALBEDO;
 
-                effectiveTemp = EffTemp(planet.Star.EcosphereRadiusAU, planet.SemiMajorAxisAU, planet.Albedo);
-                greenhouseTemp = GreenRise(Opacity(planet.MolecularWeightRetained,
+                effectiveTemp = EffTemp(planet.Star.EcosphereRadiusAU, planet.PlanetOrbitData.SemiMajorAxisAU, planet.PlanetAtmosphericData.Albedo);
+                greenhouseTemp = GreenRise(Opacity(planet.PlanetAtmosphericData.MolecularWeightRetained,
                                                          planet.Atmosphere.SurfacePressure),
                                                  effectiveTemp,
                                                  planet.Atmosphere.SurfacePressure);
-                planet.SurfaceTempKelvin = effectiveTemp + greenhouseTemp;
+                planet.PlanetTemperatureData.SurfaceTempKelvin = effectiveTemp + greenhouseTemp;
 
                 SetTempRange(ref planet);
             }
 
-            if (planet.HasGreenhouseEffect && planet.MaxTempKelvin < planet.BoilingPointWaterKelvin)
+            if (planet.PlanetProperties.HasGreenhouseEffect && planet.PlanetTemperatureData.MaxTempKelvin < planet.PlanetAtmosphericData.BoilingPointWaterKelvin)
             {
-                planet.HasGreenhouseEffect = false;
+                planet.PlanetProperties.HasGreenhouseEffect = false;
 
-                planet.VolatileGasInventory = VolatileInventory(planet.MassSM,
-                    planet.EscapeVelocityCMSec, planet.RMSVelocityCMSec, planet.Star.Mass,
-                    planet.OrbitZone, planet.HasGreenhouseEffect, (planet.GasMassSM / planet.MassSM) > 0.000001);
-                planet.Atmosphere.SurfacePressure = Pressure(planet.VolatileGasInventory, planet.RadiusKM, planet.SurfaceGravityG);
+                planet.PlanetAtmosphericData.VolatileGasInventory = VolatileInventory(planet.PlanetSizeAndMassData.MassSM,
+                    planet.PlanetSizeAndMassData.EscapeVelocityCMSec, planet.PlanetAtmosphericData.RMSVelocityCMSec, planet.Star.Mass,
+                    planet.PlanetOrbitData.OrbitZone, planet.PlanetProperties.HasGreenhouseEffect, (planet.PlanetSizeAndMassData.GasMassSM / planet.PlanetSizeAndMassData.MassSM) > 0.000001);
+                planet.Atmosphere.SurfacePressure = Pressure(planet.PlanetAtmosphericData.VolatileGasInventory, planet.PlanetSizeAndMassData.RadiusKM, planet.PlanetSizeAndMassData.SurfaceGravityG);
 
-                planet.BoilingPointWaterKelvin = BoilingPoint(planet.Atmosphere.SurfacePressure);
+                planet.PlanetAtmosphericData.BoilingPointWaterKelvin = BoilingPoint(planet.Atmosphere.SurfacePressure);
             }
 
-            waterRaw = planet.WaterCoverFraction = HydroFraction(planet.VolatileGasInventory, planet.RadiusKM);
-            cloudsRaw = planet.CloudCoverFraction = CloudFraction(planet.SurfaceTempKelvin,
-                                                     planet.MolecularWeightRetained,
-                                                     planet.RadiusKM,
-                                                     planet.WaterCoverFraction);
-            planet.IceCoverFraction = IceFraction(planet.WaterCoverFraction, planet.SurfaceTempKelvin);
+            waterRaw = planet.PlanetCoverageData.WaterCoverFraction = HydroFraction(planet.PlanetAtmosphericData.VolatileGasInventory, planet.PlanetSizeAndMassData.RadiusKM);
+            cloudsRaw = planet.PlanetCoverageData.CloudCoverFraction = CloudFraction(planet.PlanetTemperatureData.SurfaceTempKelvin,
+                                                     planet.PlanetAtmosphericData.MolecularWeightRetained,
+                                                     planet.PlanetSizeAndMassData.RadiusKM,
+                                                     planet.PlanetCoverageData.WaterCoverFraction);
+            planet.PlanetCoverageData.IceCoverFraction = IceFraction(planet.PlanetCoverageData.WaterCoverFraction, planet.PlanetTemperatureData.SurfaceTempKelvin);
 
-            if ((planet.HasGreenhouseEffect) && (planet.Atmosphere.SurfacePressure > 0.0))
+            if ((planet.PlanetProperties.HasGreenhouseEffect) && (planet.Atmosphere.SurfacePressure > 0.0))
             {
-                planet.CloudCoverFraction = 1.0;
+                planet.PlanetCoverageData.CloudCoverFraction = 1.0;
             }
 
-            if ((planet.DaytimeTempKelvin >= planet.BoilingPointWaterKelvin) && (!first) && !(IsTidallyLocked(planet) || planet.HasResonantPeriod))
+            if ((planet.PlanetTemperatureData.DaytimeTempKelvin >= planet.PlanetAtmosphericData.BoilingPointWaterKelvin) && (!first) && !(IsTidallyLocked(planet) || planet.PlanetProperties.HasResonantPeriod))
             {
-                planet.WaterCoverFraction = 0.0;
+                planet.PlanetCoverageData.WaterCoverFraction = 0.0;
                 boilOff = true;
 
-                if (planet.MolecularWeightRetained > GlobalConstants.WATER_VAPOR)
+                if (planet.PlanetAtmosphericData.MolecularWeightRetained > GlobalConstants.WATER_VAPOR)
                 {
-                    planet.CloudCoverFraction = 0.0;
+                    planet.PlanetCoverageData.CloudCoverFraction = 0.0;
                 }
                 else
                 {
-                    planet.CloudCoverFraction = 1.0;
+                    planet.PlanetCoverageData.CloudCoverFraction = 1.0;
                 }
             }
 
-            if (planet.SurfaceTempKelvin < (GlobalConstants.FREEZING_POINT_OF_WATER - 3.0))
+            if (planet.PlanetTemperatureData.SurfaceTempKelvin < (GlobalConstants.FREEZING_POINT_OF_WATER - 3.0))
             {
-                planet.WaterCoverFraction = 0.0;
+                planet.PlanetCoverageData.WaterCoverFraction = 0.0;
             }
 
-            planet.Albedo = PlanetAlbedo(planet.WaterCoverFraction, planet.CloudCoverFraction, planet.IceCoverFraction, planet.Atmosphere.SurfacePressure);
+            planet.PlanetAtmosphericData.Albedo = PlanetAlbedo(planet.PlanetCoverageData.WaterCoverFraction, planet.PlanetCoverageData.CloudCoverFraction, planet.PlanetCoverageData.IceCoverFraction, planet.Atmosphere.SurfacePressure);
 
-            effectiveTemp = EffTemp(planet.Star.EcosphereRadiusAU, planet.SemiMajorAxisAU, planet.Albedo);
+            effectiveTemp = EffTemp(planet.Star.EcosphereRadiusAU, planet.PlanetOrbitData.SemiMajorAxisAU, planet.PlanetAtmosphericData.Albedo);
             greenhouseTemp = GreenRise(
-                Opacity(planet.MolecularWeightRetained, planet.Atmosphere.SurfacePressure),
+                Opacity(planet.PlanetAtmosphericData.MolecularWeightRetained, planet.Atmosphere.SurfacePressure),
                 effectiveTemp, planet.Atmosphere.SurfacePressure);
-            planet.SurfaceTempKelvin = effectiveTemp + greenhouseTemp;
+            planet.PlanetTemperatureData.SurfaceTempKelvin = effectiveTemp + greenhouseTemp;
 
             if (!first)
             {
                 if (!boilOff)
                 {
-                    planet.WaterCoverFraction = (planet.WaterCoverFraction + (last_water * 2)) / 3;
+                    planet.PlanetCoverageData.WaterCoverFraction = (planet.PlanetCoverageData.WaterCoverFraction + (last_water * 2)) / 3;
                 }
-                planet.CloudCoverFraction = (planet.CloudCoverFraction + (last_clouds * 2)) / 3;
-                planet.IceCoverFraction = (planet.IceCoverFraction + (last_ice * 2)) / 3;
-                planet.Albedo = (planet.Albedo + (last_albedo * 2)) / 3;
-                planet.SurfaceTempKelvin = (planet.SurfaceTempKelvin + (last_temp * 2)) / 3;
+                planet.PlanetCoverageData.CloudCoverFraction = (planet.PlanetCoverageData.CloudCoverFraction + (last_clouds * 2)) / 3;
+                planet.PlanetCoverageData.IceCoverFraction = (planet.PlanetCoverageData.IceCoverFraction + (last_ice * 2)) / 3;
+                planet.PlanetAtmosphericData.Albedo = (planet.PlanetAtmosphericData.Albedo + (last_albedo * 2)) / 3;
+                planet.PlanetTemperatureData.SurfaceTempKelvin = (planet.PlanetTemperatureData.SurfaceTempKelvin + (last_temp * 2)) / 3;
             }
 
             SetTempRange(ref planet);
@@ -1145,14 +1147,14 @@ namespace DLS.StarformNET
                 var gas = planet.Atmosphere.Composition[index];
 
                 var ipp = InspiredPartialPressure(planet.Atmosphere.SurfacePressure, planet.Atmosphere.Composition[index].surf_pressure);
-                if (ipp > gas.GasType.max_ipp)
+                if (ipp > gas.GasType.MaxIpp)
                 {
                     poisonous = true;
                     planet.Atmosphere.PoisonousGases.Add(gas);
                 }
 
                 // TODO why not just have a min_ipp for every gas, even if it's going to be zero for everything that's not oxygen?
-                if (gas.GasType.num == GlobalConstants.AN_O)
+                if (gas.GasType.Num == GlobalConstants.AN_O)
                 {
                     oxygenOk = ((ipp >= GlobalConstants.MIN_O2_IPP) && (ipp <= GlobalConstants.MAX_O2_IPP));
                 }
@@ -1173,7 +1175,7 @@ namespace DLS.StarformNET
         /// <param name="planet"></param>
         public static void IterateSurfaceTemp(ref Planet planet)
         {
-            var initTemp = EstTemp(planet.Star.EcosphereRadiusAU, planet.SemiMajorAxisAU, planet.Albedo);
+            var initTemp = EstTemp(planet.Star.EcosphereRadiusAU, planet.PlanetOrbitData.SemiMajorAxisAU, planet.PlanetAtmosphericData.Albedo);
 
             //var h2Life = GasLife(GlobalConstants.MOL_HYDROGEN, planet);
             //var h2oLife = GasLife(GlobalConstants.WATER_VAPOR, planet);
@@ -1184,19 +1186,19 @@ namespace DLS.StarformNET
 
             for (var count = 0; count <= 25; count++)
             {
-                var lastWater = planet.WaterCoverFraction;
-                var lastClouds = planet.CloudCoverFraction;
-                var lastIce = planet.IceCoverFraction;
-                var lastTemp = planet.SurfaceTempKelvin;
-                var lastAlbedo = planet.Albedo;
+                var lastWater = planet.PlanetCoverageData.WaterCoverFraction;
+                var lastClouds = planet.PlanetCoverageData.CloudCoverFraction;
+                var lastIce = planet.PlanetCoverageData.IceCoverFraction;
+                var lastTemp = planet.PlanetTemperatureData.SurfaceTempKelvin;
+                var lastAlbedo = planet.PlanetAtmosphericData.Albedo;
 
                 CalculateSurfaceTemperature(ref planet, false, lastWater, lastClouds, lastIce, lastTemp, lastAlbedo);
 
-                if (Math.Abs(planet.SurfaceTempKelvin - lastTemp) < 0.25)
+                if (Math.Abs(planet.PlanetTemperatureData.SurfaceTempKelvin - lastTemp) < 0.25)
                     break;
             }
 
-            planet.GreenhouseRiseKelvin = planet.SurfaceTempKelvin - initTemp;
+            planet.PlanetTemperatureData.GreenhouseRiseKelvin = planet.PlanetTemperatureData.SurfaceTempKelvin - initTemp;
         }
 
         private static double Lim(double x)
@@ -1206,8 +1208,8 @@ namespace DLS.StarformNET
 
         private static double Soft(double v, double max, double min)
         {
-            double dv = v - min;
-            double dm = max - min;
+            var dv = v - min;
+            var dm = max - min;
             return (Lim(2 * dv / dm - 1) + 1) / 2 * dm + min;
         }
 
@@ -1215,24 +1217,46 @@ namespace DLS.StarformNET
         {
             var pressmod = 1 / Math.Sqrt(1 + 20 * planet.Atmosphere.SurfacePressure / 1000.0);
             var ppmod = 1 / Math.Sqrt(10 + 5 * planet.Atmosphere.SurfacePressure / 1000.0);
-            var tiltmod = Math.Abs(Math.Cos(planet.AxialTiltDegrees * Math.PI / 180) * Math.Pow(1 + planet.Eccentricity, 2));
-            var daymod = 1 / (200 / planet.DayLengthHours + 1);
+            var tiltmod = Math.Abs(Math.Cos(planet.PlanetOrbitData.AxialTiltDegrees * Math.PI / 180) * Math.Pow(1 + planet.PlanetOrbitData.Eccentricity, 2));
+            var daymod = 1 / (200 / planet.PlanetOrbitData.DayLengthHours + 1);
             var mh = Math.Pow(1 + daymod, pressmod);
             var ml = Math.Pow(1 - daymod, pressmod);
-            var hi = mh * planet.SurfaceTempKelvin;
-            var lo = ml * planet.SurfaceTempKelvin;
+            var hi = mh * planet.PlanetTemperatureData.SurfaceTempKelvin;
+            var lo = ml * planet.PlanetTemperatureData.SurfaceTempKelvin;
             var sh = hi + Math.Pow((100 + hi) * tiltmod, Math.Sqrt(ppmod));
             var wl = lo - Math.Pow((150 + lo) * tiltmod, Math.Sqrt(ppmod));
-            var max = planet.SurfaceTempKelvin + Math.Sqrt(planet.SurfaceTempKelvin) * 10;
-            var min = planet.SurfaceTempKelvin / Math.Sqrt(planet.DayLengthHours + 24);
+            var max = planet.PlanetTemperatureData.SurfaceTempKelvin + Math.Sqrt(planet.PlanetTemperatureData.SurfaceTempKelvin) * 10;
+            var min = planet.PlanetTemperatureData.SurfaceTempKelvin / Math.Sqrt(planet.PlanetOrbitData.DayLengthHours + 24);
 
             if (lo < min) lo = min;
             if (wl < 0) wl = 0;
 
-            planet.DaytimeTempKelvin = Soft(hi, max, min);
-            planet.NighttimeTempKelvin = Soft(lo, max, min);
-            planet.MaxTempKelvin = Soft(sh, max, min);
-            planet.MinTempKelvin = Soft(wl, max, min);
+            planet.PlanetTemperatureData.DaytimeTempKelvin = Soft(hi, max, min);
+            planet.PlanetTemperatureData.NighttimeTempKelvin = Soft(lo, max, min);
+            planet.PlanetTemperatureData.MaxTempKelvin = Soft(sh, max, min);
+            planet.PlanetTemperatureData.MinTempKelvin = Soft(wl, max, min);
         }
+        
+            public static string GetDescription<T>(this T enumerationValue)
+                where T : struct
+            {
+                var type = enumerationValue.GetType();
+                if (!type.IsEnum)
+                {
+                    throw new ArgumentException("EnumerationValue must be of Enum type", "enumerationValue");
+                }
+
+                //Tries to find a DescriptionAttribute for a potential friendly name
+                //for the enum
+                var memberInfo = type.GetMember(enumerationValue.ToString());
+                if (memberInfo is not { Length: > 0 }) return enumerationValue.ToString();
+                var attrs = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+                return attrs is { Length: > 0 } ?
+                    //Pull out the description value
+                    ((DescriptionAttribute)attrs[0]).Description :
+                    //If we have no description attribute, just return the ToString of the enum
+                    enumerationValue.ToString();
+            }
     }
 }
