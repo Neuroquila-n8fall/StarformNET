@@ -28,6 +28,13 @@
         }
 
         /// <summary>
+        /// Converts Kelvin to centigrade
+        /// </summary>
+        /// <param name="tempK">Temperature in Kelvin</param>
+        /// <returns>Temperature in degrees Centigrade</returns>
+        public static double KelvinToCentigrade(double tempK) => tempK - 273.15F;
+
+        /// <summary>
         /// Converts pressure from mmHg to millibars
         /// </summary>
         /// <param name="presmmHg">Pressure in mmHg</param>
