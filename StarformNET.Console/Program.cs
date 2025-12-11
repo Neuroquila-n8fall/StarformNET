@@ -1,6 +1,7 @@
 namespace DLS.StarformNET.Console
 {
     using System.Runtime.Serialization;
+    using System.Text.Json;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.IO;
 
@@ -13,7 +14,9 @@ namespace DLS.StarformNET.Console
         {
             Utilities.InitRandomSeed(0);
             var system = Generator.GenerateStellarSystem(SYSTEM_NAME);
-            IFormatter formatter = new BinaryFormatter();
+            // TODO: The following uses System.Text.Json for serialization. This is a proposal and may not work for deserialization if the format is not compatible.
+            var json = JsonSerializer.Serialize(system);
+            File.WriteAllText(SYSTEM_FILE, json);
             //Stream stream = new FileStream(SYSTEM_FILE, FileMode.Create, FileAccess.Write, FileShare.None);
             //formatter.Serialize(stream, system);
             //stream.Close();
