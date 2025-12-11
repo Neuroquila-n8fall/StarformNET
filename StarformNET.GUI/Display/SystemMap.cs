@@ -27,7 +27,7 @@ namespace DLS.StarformNET.Display
             _planetSprites.Clear();
             foreach (var p in planets)
             {
-                var sprite = SpriteSheet.GetSprite(p.Type);
+                var sprite = SpriteSheet.GetSprite(p.PlanetProperties.PlanetType);
                 _planetSprites.Add(sprite);
             }
 
@@ -116,11 +116,11 @@ namespace DLS.StarformNET.Display
 
                 var moonYOffset = _planetSprites[i].SourceRect.Height + 2;
                 var moonStartY = _planetSprites[i].DrawLocation.Y + moonYOffset;
-                var columns = (int)Math.Ceiling((float)_planets[i].Moons.Count / MOONS_PER_COLUMN);
+                var columns = (int)Math.Ceiling((float)_planets[i].PlanetMoonData.Moons.Count / MOONS_PER_COLUMN);
                 var moonStartX = _planetSprites[i].DrawLocation.X + (int)((_planetSprites[i].SourceRect.Width / 2.0f) - (4 * columns) + 2);
                 var x = moonStartX;
                 var y = moonStartY;
-                for (var k = 0; k < _planets[i].Moons.Count; k++)
+                for (var k = 0; k < _planets[i].PlanetMoonData.Moons.Count; k++)
                 {
                     if (k % MOONS_PER_COLUMN == 0)
                     {

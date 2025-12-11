@@ -20,13 +20,13 @@ namespace DLS.StarformNET.Display
 
             public OrbitParameters(Planet planet, float angle)
             {
-                a = Math.Sqrt(planet.SemiMajorAxisAU);
-                e = planet.Eccentricity;
+                a = Math.Sqrt(planet.PlanetOrbitData.SemiMajorAxisAU);
+                e = planet.PlanetOrbitData.Eccentricity;
                 b = Utilities.GetSemiMinorAxis(a, e);
                 this.angle = angle;
-                size = (float)(planet.RadiusKM / GlobalConstants.KM_EARTH_RADIUS);
+                size = (float)(planet.PlanetSizeAndMassData.RadiusKM / GlobalConstants.KM_EARTH_RADIUS);
                 color = Brushes.White;
-                switch (planet.Type)
+                switch (planet.PlanetProperties.PlanetType)
                 {
                     case PlanetType.GasGiant:
                     case PlanetType.SubGasGiant:

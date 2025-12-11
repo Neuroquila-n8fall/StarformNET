@@ -9,7 +9,7 @@ namespace DLS.StarformNET.UnitTests
     using System.IO;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
-    using Environment = DLS.StarformNET.Environment;
+    using Environment = DLS.StarformNET.HelperFunctions;
 
     class GeneratorTests
     {
@@ -74,28 +74,28 @@ namespace DLS.StarformNET.UnitTests
                 var planet = new Planet();
                 planet.Star = GetTestStar();
                 planet.Star.EcosphereRadiusAU = System.Math.Sqrt(planet.Star.Luminosity);
-                planet.SemiMajorAxisAU = 0.723332;
-                planet.Eccentricity = 0.0067;
-                planet.AxialTiltDegrees = 2.8;
-                planet.OrbitZone = Environment.OrbitalZone(planet.Star.Luminosity, planet.SemiMajorAxisAU);
-                planet.DayLengthHours = 2802;
-                planet.OrbitalPeriodDays = 225;
+                planet.PlanetOrbitData.SemiMajorAxisAU = 0.723332;
+                planet.PlanetOrbitData.Eccentricity = 0.0067;
+                planet.PlanetOrbitData.AxialTiltDegrees = 2.8;
+                planet.PlanetOrbitData.OrbitZone = Environment.OrbitalZone(planet.Star.Luminosity, planet.PlanetOrbitData.SemiMajorAxisAU);
+                planet.PlanetOrbitData.DayLengthHours = 2802;
+                planet.PlanetOrbitData.OrbitalPeriodDays = 225;
 
-                planet.MassSM = 0.000002447;
-                planet.GasMassSM = 2.41E-10;
-                planet.DustMassSM = planet.MassSM - planet.GasMassSM;
-                planet.RadiusKM = 6051.8;
-                planet.DensityGCC = Environment.EmpiricalDensity(planet.MassSM, planet.SemiMajorAxisAU, planet.Star.EcosphereRadiusAU, true);
-                planet.ExosphereTempKelvin = GlobalConstants.EARTH_EXOSPHERE_TEMP / Utilities.Pow2(planet.SemiMajorAxisAU / planet.Star.EcosphereRadiusAU);
-                planet.SurfaceAccelerationCMSec2 = Environment.Acceleration(planet.MassSM, planet.RadiusKM);
-                planet.EscapeVelocityCMSec = Environment.EscapeVelocity(planet.MassSM, planet.RadiusKM);
+                planet.PlanetSizeAndMassData.MassSM = 0.000002447;
+                planet.PlanetSizeAndMassData.GasMassSM = 2.41E-10;
+                planet.PlanetSizeAndMassData.DustMassSM = planet.PlanetSizeAndMassData.MassSM - planet.PlanetSizeAndMassData.GasMassSM;
+                planet.PlanetSizeAndMassData.RadiusKM = 6051.8;
+                planet.PlanetSizeAndMassData.DensityGCC = Environment.EmpiricalDensity(planet.PlanetSizeAndMassData.MassSM, planet.PlanetOrbitData.SemiMajorAxisAU, planet.Star.EcosphereRadiusAU, true);
+                planet.PlanetTemperatureData.ExosphereTempKelvin = GlobalConstants.EARTH_EXOSPHERE_TEMP / Utilities.Pow2(planet.PlanetOrbitData.SemiMajorAxisAU / planet.Star.EcosphereRadiusAU);
+                planet.PlanetSizeAndMassData.SurfaceAccelerationCMSec2 = Environment.Acceleration(planet.PlanetSizeAndMassData.MassSM, planet.PlanetSizeAndMassData.RadiusKM);
+                planet.PlanetSizeAndMassData.EscapeVelocityCMSec = Environment.EscapeVelocity(planet.PlanetSizeAndMassData.MassSM, planet.PlanetSizeAndMassData.RadiusKM);
                 
                 planet.Atmosphere.SurfacePressure = 92000;
-                planet.DaytimeTempKelvin = 737;
-                planet.NighttimeTempKelvin = 737;
-                planet.SurfaceTempKelvin = 737;
-                planet.SurfaceGravityG = 0.9;
-                planet.MolecularWeightRetained = Environment.MinMolecularWeight(planet);
+                planet.PlanetTemperatureData.DaytimeTempKelvin = 737;
+                planet.PlanetTemperatureData.NighttimeTempKelvin = 737;
+                planet.PlanetTemperatureData.SurfaceTempKelvin = 737;
+                planet.PlanetSizeAndMassData.SurfaceGravityG = 0.9;
+                planet.PlanetAtmosphericData.MolecularWeightRetained = Environment.MinMolecularWeight(planet);
 
                 return planet;
             }
@@ -116,7 +116,8 @@ namespace DLS.StarformNET.UnitTests
                 var planet = new Planet();
                 var sun = GetTestStar();
                 planet.Star = sun;
-                Generator.CalculateGases(planet, new ChemType[0]);
+                PlanetComposition.CalculateGases(planet, Array.Empty<ChemType>());
+                
                 
                 Assert.Empty(planet.Atmosphere.Composition);
             }
@@ -127,7 +128,7 @@ namespace DLS.StarformNET.UnitTests
             {
                 var planet = GetTestPlanetAtmosphere();
                 var star = planet.Star;
-                Generator.CalculateGases(planet, new ChemType[0]);
+                PlanetComposition.CalculateGases(planet, Array.Empty<ChemType>());
 
                 Assert.Empty(planet.Atmosphere.Composition);
             }
@@ -152,13 +153,13 @@ namespace DLS.StarformNET.UnitTests
 
                 var planet = GetTestPlanetAtmosphere();
                 var star = planet.Star;
-                Generator.CalculateGases(planet, ChemType.GetDefaultTable());
+                PlanetComposition.CalculateGases(planet, ChemType.GetDefaultTable());
 
                 Assert.Equal(expected.Count, planet.Atmosphere.Composition.Count);
 
                 foreach (var gas in planet.Atmosphere.Composition)
                 {
-                    Assert.Equal(expected[gas.GasType.symbol], gas.surf_pressure, DELTA);
+                    Assert.Equal(expected[gas.GasType.Symbol], gas.surf_pressure, DELTA);
                 }
             }
 
@@ -168,7 +169,7 @@ namespace DLS.StarformNET.UnitTests
             {
                 var planet = GetTestPlanetNoAtmosphere();
                 var star = planet.Star;
-                Generator.CalculateGases(planet, ChemType.GetDefaultTable());
+                PlanetComposition.CalculateGases(planet, ChemType.GetDefaultTable());
 
                 Assert.Empty(planet.Atmosphere.Composition);
             }

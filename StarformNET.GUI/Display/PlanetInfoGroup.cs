@@ -52,7 +52,7 @@ namespace DLS.StarformNET.Display
                 PlanetText.GetHydrosphere(planet),
                 PlanetText.GetIceCover(planet),
                 PlanetText.GetCloudCover(planet),
-                planet.Moons.Count.ToString(),
+                planet.PlanetMoonData.Moons.Count.ToString(),
                 PlanetText.GetSurfacePressureStringAtm(planet),
                 PlanetText.GetAtmoString(planet)
             };
