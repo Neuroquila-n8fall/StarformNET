@@ -110,7 +110,8 @@ namespace DLS.StarformNET.Data
                 > 5200 and <= 6000 => StarColor.Yellow,
                 > 3700 and <= 5200 => StarColor.LightOrange,
                 > 2400 and <= 3700 => StarColor.OrangeRed,
-                <= 2400 => StarColor.Brown
+                <= 2400 => StarColor.Brown,
+                _ => StarColor.Undefined
             };
 
         public override string ToString()
@@ -161,12 +162,14 @@ namespace DLS.StarformNET.Data
         Giant,
         [Description("Super Giant")]
         SuperGiant,
-        [Description("Uncategorized")]
+        [Description("Star, that does not fit into a category")]
         Uncategorized
     }
 
     public enum StarColor
     {
+        [Description("Unspecified")]
+        Undefined,
         [Description("Orange-Red")]
         OrangeRed,
         [Description("Light Orange")]
@@ -182,6 +185,7 @@ namespace DLS.StarformNET.Data
         [Description("Blue")]
         Blue,
         [Description("Brown")]
-        Brown
+        Brown,
+
     }
 }

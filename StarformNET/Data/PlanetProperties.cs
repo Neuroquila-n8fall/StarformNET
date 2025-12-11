@@ -1,5 +1,9 @@
 namespace DLS.StarformNET.Data;
 
+
+/// <summary>
+/// Contains general properties of a planet such as the type, if it's comparable to earth and so on.
+/// </summary>
 public class PlanetProperties
 {
     public PlanetProperties()

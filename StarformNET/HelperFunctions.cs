@@ -114,7 +114,7 @@ namespace DLS.StarformNET
         /// </summary>
         public static bool IsTidallyLocked(Planet planet)
         {
-            return (int) planet.PlanetOrbitData.DayLengthHours == (int) (planet.PlanetOrbitData.OrbitalPeriodDays * 24);
+            return (int)planet.PlanetOrbitData.DayLengthHours == (int)(planet.PlanetOrbitData.OrbitalPeriodDays * 24);
         }
 
         /// <summary>
@@ -140,17 +140,12 @@ namespace DLS.StarformNET
             var ice = planet.PlanetCoverageData.IceCoverFraction * 100.0;
 
             return
-                planet.PlanetSizeAndMassData.SurfaceGravityG >= .8 &&
-                planet.PlanetSizeAndMassData.SurfaceGravityG <= 1.2 &&
-                relTemp >= -2.0 &&
-                relTemp <= 3.0 &&
+                planet.PlanetSizeAndMassData.SurfaceGravityG is >= .8 and <= 1.2 &&
+                relTemp is >= -2.0 and <= 3.0 &&
                 ice <= 10.0 &&
-                pressure >= 0.5 &&
-                pressure <= 2.0 &&
-                clouds >= 40.0 &&
-                clouds <= 80.0 &&
-                seas >= 50.0 &&
-                seas <= 80.0 &&
+                pressure is >= 0.5 and <= 2.0 &&
+                clouds is >= 40.0 and <= 80.0 &&
+                seas is >= 50.0 and <= 80.0 &&
                 planet.PlanetProperties.PlanetType != PlanetType.Water &&
                 planet.Atmosphere.Breathability == Data.Breathability.Breathable;
         }
@@ -165,14 +160,8 @@ namespace DLS.StarformNET
             {
                 return (1);
             }
-            else if (orbRadius < (15.0 * Math.Sqrt(luminosity)))
-            {
-                return (2);
-            }
-            else
-            {
-                return (3);
-            }
+
+            return orbRadius < (15.0 * Math.Sqrt(luminosity)) ? 2 : 3;
         }
 
         /// <summary>
@@ -183,10 +172,8 @@ namespace DLS.StarformNET
         /// <returns>Radius in units of km</returns>
         public static double VolumeRadius(double mass, double density)
         {
-            double volume;
-
-            mass = mass * GlobalConstants.SOLAR_MASS_IN_GRAMS;
-            volume = mass / density;
+            mass *= GlobalConstants.SOLAR_MASS_IN_GRAMS;
+            var volume = mass / density;
             return (Math.Pow((3.0 * volume) / (4.0 * Math.PI), (1.0 / 3.0)) / GlobalConstants.CM_PER_KM);
         }
 
@@ -334,7 +321,7 @@ namespace DLS.StarformNET
             var planetaryMassInGrams = massSM * GlobalConstants.SOLAR_MASS_IN_GRAMS;
             var equatorialRadiusInCM = radiusKM * GlobalConstants.CM_PER_KM;
             var k2 = isGasGiant ? 0.24 : 0.33;
-            
+
             return Math.Sqrt(GlobalConstants.J * (planetaryMassInGrams) /
                              ((k2 / 2.0) * Utilities.Pow2(equatorialRadiusInCM)));
         }
@@ -356,7 +343,7 @@ namespace DLS.StarformNET
             var planetaryMassInGrams = massSM * GlobalConstants.SOLAR_MASS_IN_GRAMS;
             var equatorialRadiusInCM = radiusKM * GlobalConstants.CM_PER_KM;
 
-            return GlobalConstants.CHANGE_IN_EARTH_ANG_VEL * 
+            return GlobalConstants.CHANGE_IN_EARTH_ANG_VEL *
                    (densityGCC / GlobalConstants.EARTH_DENSITY) *
                    (equatorialRadiusInCM / GlobalConstants.EARTH_RADIUS) *
                    (GlobalConstants.EARTH_MASS_IN_GRAMS / planetaryMassInGrams) *
@@ -461,14 +448,14 @@ namespace DLS.StarformNET
             return (angularVelocity <= 0.0 || dayInHours >= yearInHours)
                    && ecc > 0.1;
         }
-        
+
         /// <summary>
         /// Returns a randomized inclination in units of degrees
         /// </summary>
         /// <param name="semiMajorAxisAU">Orbital radius in units of AU</param>
         public static double Inclination(double semiMajorAxisAU)
         {
-            var inclination = (int)(Math.Pow(semiMajorAxisAU, 0.2) * 
+            var inclination = (int)(Math.Pow(semiMajorAxisAU, 0.2) *
                                     Utilities.About(GlobalConstants.EARTH_AXIAL_TILT, 0.4));
             return inclination % 360;
         }
@@ -488,7 +475,7 @@ namespace DLS.StarformNET
             var radiusinCM = radius * GlobalConstants.CM_PER_KM;
             return (Math.Sqrt(2.0 * GlobalConstants.GRAV_CONSTANT * massInGrams / radiusinCM));
         }
-        
+
         /// <summary>
         /// Calculates the root-mean-square velocity of particles in a gas.
         /// </summary>
@@ -544,7 +531,7 @@ namespace DLS.StarformNET
         {
             return acceleration / GlobalConstants.EARTH_ACCELERATION;
         }
-        
+
         /// <summary>
         /// Calculates the inventory of volatiles in a planet's atmosphere
         /// as a result of outgassing. This value is used to calculate 
@@ -656,7 +643,7 @@ namespace DLS.StarformNET
             {
                 return 0.0;
             }
-            
+
             var surfArea = 4.0 * Math.PI * Utilities.Pow2(equatorialRadius);
             var hydroMass = hydroFraction * surfArea * GlobalConstants.EARTH_WATER_MASS_PER_AREA;
             var waterVaporKg = (0.00000001 * hydroMass) *
@@ -720,7 +707,7 @@ namespace DLS.StarformNET
                   * Utilities.Pow1_4((1.0 - albedo) / (1.0 - GlobalConstants.EARTH_ALBEDO))
                   * GlobalConstants.EARTH_AVERAGE_KELVIN;
         }
-        
+
         /// <summary>
         /// Calculates whether or not a planet is suffering from a runaway greenhouse
         /// effect.
@@ -772,7 +759,7 @@ namespace DLS.StarformNET
 
             return rise;
         }
-        
+
         /// <summary>
         /// Calculates the albedo of a planetary body.
         /// </summary>
@@ -920,7 +907,7 @@ namespace DLS.StarformNET
         /// <param name="surfGravG">Surface gravity of the planet in G</param>
         /// <param name="radiusKM">Radius of the planet in km</param>
         /// <returns></returns>
-        public static double GasLife(double molecularWeight, 
+        public static double GasLife(double molecularWeight,
             double exoTempKelvin, double surfGravG, double radiusKM)
         {
             // Taken from Dole p. 34. He cites Jeans (1916) & Jones (1923)
@@ -938,7 +925,7 @@ namespace DLS.StarformNET
 
             return years;
         }
-        
+
         /// <summary>
         /// Calculates the minimum molecular weight retained by a planet
         /// </summary>
@@ -1116,7 +1103,7 @@ namespace DLS.StarformNET
 
             return (surf_pressure - pH2O) * fraction;
         }
-        
+
         /// <summary>
         /// Returns the breathability state of the planet's atmosphere.
         /// </summary>
@@ -1236,27 +1223,61 @@ namespace DLS.StarformNET
             planet.PlanetTemperatureData.MaxTempKelvin = Soft(sh, max, min);
             planet.PlanetTemperatureData.MinTempKelvin = Soft(wl, max, min);
         }
-        
-            public static string GetDescription<T>(this T enumerationValue)
-                where T : struct
+
+        public static string GetDescription<T>(this T enumerationValue)
+            where T : struct
+        {
+            var type = enumerationValue.GetType();
+            if (!type.IsEnum)
             {
-                var type = enumerationValue.GetType();
-                if (!type.IsEnum)
-                {
-                    throw new ArgumentException("EnumerationValue must be of Enum type", "enumerationValue");
-                }
-
-                //Tries to find a DescriptionAttribute for a potential friendly name
-                //for the enum
-                var memberInfo = type.GetMember(enumerationValue.ToString());
-                if (memberInfo is not { Length: > 0 }) return enumerationValue.ToString();
-                var attrs = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-                return attrs is { Length: > 0 } ?
-                    //Pull out the description value
-                    ((DescriptionAttribute)attrs[0]).Description :
-                    //If we have no description attribute, just return the ToString of the enum
-                    enumerationValue.ToString();
+                throw new ArgumentException("EnumerationValue must be of Enum type", "enumerationValue");
             }
+
+            //Tries to find a DescriptionAttribute for a potential friendly name
+            //for the enum
+            var memberInfo = type.GetMember(enumerationValue.ToString());
+            if (memberInfo is not { Length: > 0 }) return enumerationValue.ToString();
+            var attrs = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+            return attrs is { Length: > 0 } ?
+                //Pull out the description value
+                ((DescriptionAttribute)attrs[0]).Description :
+                //If we have no description attribute, just return the ToString of the enum
+                enumerationValue.ToString();
+        }
+
+        public static void CheckPlanet(Planet planet, string planetID, bool is_moon)
+        {
+            planet.PlanetTemperatureData.Illumination = HelperFunctions.MinimumIllumination(planet.PlanetOrbitData.SemiMajorAxisAU, planet.Star.Luminosity);
+            planet.Atmosphere.Breathability = HelperFunctions.Breathability(planet);
+            planet.PlanetProperties.IsHabitable = HelperFunctions.IsHabitable(planet);
+            planet.PlanetProperties.IsEarthlike = HelperFunctions.IsEarthlike(planet);
+        }
+
+        public static double GetStellarDustLimit(double stellarMassRatio)
+        {
+            return (200.0 * Math.Pow(stellarMassRatio, (1.0 / 3.0)));
+        }
+
+        public static double GetOuterLimit(Star star)
+        {
+            if (star.BinaryMass < .001)
+            {
+                return 0.0;
+            }
+
+            // The following is Holman & Wiegert's equation 1 from
+            // Long-Term Stability of Planets in Binary Systems
+            // The Astronomical Journal, 117:621-628, Jan 1999
+            var m1 = star.Mass;
+            var m2 = star.BinaryMass;
+            var mu = m2 / (m1 + m2);
+            var e = star.SemiMajorAxisAU;
+            var e2 = Utilities.Pow2(e);
+            var a = star.Eccentricity;
+
+            return (0.464 + (-0.380 * mu) + (-0.631 * e) + (0.586 * mu * e) + (0.150 * e2) + (-0.198 * mu * e2)) * a;
+        }
+
     }
 }

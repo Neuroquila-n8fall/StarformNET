@@ -13,6 +13,7 @@ namespace DLS.StarformNET.Data
         [JsonIgnore]
         public Star Star { get; set; }
         public Atmosphere Atmosphere { get; set; } = new Atmosphere();
+        public SolidInventory SolidInventory { get; set; } = new();
 
         public PlanetOrbitData PlanetOrbitData { get; }
 
@@ -92,5 +93,6 @@ namespace DLS.StarformNET.Data
         {
             return $"{PlanetProperties.PlanetType}, Moons: {PlanetMoonData.Moons.Count}, Temp: {PlanetTemperatureData.DaytimeTempKelvin}/{PlanetTemperatureData.NighttimeTempKelvin}";
         }
+
     }
 }
