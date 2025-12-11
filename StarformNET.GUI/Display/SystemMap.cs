@@ -2,6 +2,7 @@ namespace DLS.StarformNET.Display
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Drawing;
     using System.Windows.Forms;
     using Data;
@@ -11,6 +12,7 @@ namespace DLS.StarformNET.Display
         public static int MOONS_PER_COLUMN = 4;
 
         public PlanetSpriteSheet SpriteSheet;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int PlanetPadding { get; set; }
 
         private List<Sprite> _planetSprites = new List<Sprite>();
