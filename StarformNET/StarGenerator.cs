@@ -9,12 +9,9 @@ namespace DLS.StarformNET
 
         public static Star GetDefaultStar()
         {
-            var sun = new Star();
-
-            if (sun.Mass < 0.2 || sun.Mass > 1.5)
-            {
-                sun.Mass = Utilities.RandomNumber(0.7, 1.4);
-            }
+            var mass = Utilities.RandomNumber(0.7, 1.4);
+            // SOL as default
+            var sun = new Star(1, mass, 5772);
 
             if (sun.Luminosity == 0)
             {
